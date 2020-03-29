@@ -25,12 +25,17 @@ public interface HistoryAnalysisService {
     /**
      * 生成红球Top的趋势图，看看趋势图是否有变化
      */
-    public void generateTrendChart();
+    public void generateRedTrendChart();
 
     /**
      * 生成红球Top的趋势图，看看趋势图是否有变化
      */
-    public void generateTrendChart2();
+    public void generateRedTrendChart2();
+
+    /**
+     * 生成蓝球Top的趋势图，看看趋势图是否有变化
+     */
+    public void generateBlueTrendChart2();
 
 
 }

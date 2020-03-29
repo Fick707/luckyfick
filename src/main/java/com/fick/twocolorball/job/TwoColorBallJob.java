@@ -33,7 +33,10 @@ public class TwoColorBallJob {
         log.info("get top blue {}.",JSON.toJSON(topBlues));
 
         // top red 变化趋势图
-        historyAnalysisService.generateTrendChart2();
+        historyAnalysisService.generateRedTrendChart2();
+
+        // top blue 变化趋势图
+        historyAnalysisService.generateBlueTrendChart2();
         log.info("run two color ball job done.");
     }
 }

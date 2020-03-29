@@ -56,7 +56,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
-    public void generateTrendChart() {
+    public void generateRedTrendChart() {
         // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=line-stack
         int from = 0;
         int to = 100;
@@ -114,7 +114,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
-    public void generateTrendChart2() {
+    public void generateRedTrendChart2() {
         // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
         int from = 0;
         int to = 100;
@@ -175,7 +175,77 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
                 .fluentPut("encode",new JSONObject().fluentPut("itemName","product").fluentPut("value",100).fluentPut("tooltip",100))
         );
         option.put("series",series);
-        log.info("generate trend chart done.");
+        log.info("generate red trend chart done.");
+//        SerializerFeature.config()
+        String result = option.toString(SerializerFeature.UseSingleQuotes);
+
+        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
+        log.info("{}",result);
+    }
+
+    @Override
+    public void generateBlueTrendChart2() {
+        // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
+        int from = 0;
+        int to = 100;
+        int step = 100;
+        List<Bet> bets = historyManage.getBetHistory();
+        List<String> counts = new ArrayList<>();
+        Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
+        while (to < bets.size()){
+            List<NumberCount> numberCounts = generateTopBlue(bets.subList(from,to));
+            for(NumberCount numberCount : numberCounts){
+                Integer number = numberCount.getNumber();
+                List<Integer> countList = numberCountsMap.get(number);
+                if(countList == null){
+                    countList = new ArrayList<>();
+                    numberCountsMap.put(number,countList);
+                }
+                countList.add(numberCount.getCount());
+            }
+            counts.add(to+"");
+            from += step;
+            to += step;
+        }
+
+        JSONObject option = new JSONObject();
+        option.put("title",new JSONObject().fluentPut("text","top red 趋势"));
+        option.put("tooltip",new JSONObject().fluentPut("trigger","axis").fluentPut("showContent",false));
+        option.put("legend",new JSONObject());
+        option.put("xAxis",new JSONObject().fluentPut("type","category"));
+        option.put("yAxis",new JSONObject().fluentPut("gridIndex",0));
+        option.put("grid",new JSONObject().fluentPut("top","55%"));
+        JSONArray sources = new JSONArray();
+        JSONArray product = new JSONArray();
+        product.add("product");
+        product.addAll(counts);
+        sources.add(product);
+        for(Integer number : numberCountsMap.keySet()){
+            JSONArray nc = new JSONArray();
+            nc.add(number+"");
+            nc.addAll(numberCountsMap.get(number));
+            sources.add(nc);
+        }
+        option.put("dataset",new JSONObject().fluentPut("source",sources));
+
+        JSONArray series = new JSONArray();
+        for(Integer number : numberCountsMap.keySet()){
+            series.add(new JSONObject()
+                    .fluentPut("smooth",true)
+                    .fluentPut("type","line")
+                    .fluentPut("seriesLayoutBy","row")
+            );
+        }
+        series.add(new JSONObject()
+                .fluentPut("type","pie")
+                .fluentPut("id","pie")
+                .fluentPut("radius","30%")
+                .fluentPut("center",new JSONArray().fluentAdd("50%").fluentAdd("25%"))
+                .fluentPut("label",new JSONObject().fluentPut("formatter","{b}: {@100} ({d}%)"))
+                .fluentPut("encode",new JSONObject().fluentPut("itemName","product").fluentPut("value",100).fluentPut("tooltip",100))
+        );
+        option.put("series",series);
+        log.info("generate blue trend chart done.");
 //        SerializerFeature.config()
         String result = option.toString(SerializerFeature.UseSingleQuotes);
 
