@@ -2,6 +2,7 @@ package com.fick.twocolorball;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -33,14 +34,12 @@ public class Application {
      * @param args arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        ApplicationContext ctx = new SpringApplicationBuilder()
-                .sources(Application.class)
-                .web(WebApplicationType.NONE).bannerMode(Banner.Mode.OFF)
-                .run(args);
-
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        ApplicationContext application = app.run(args);
         log.info("项目启动!");
 
-        CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
+        CountDownLatch closeLatch = application.getBean(CountDownLatch.class);
         closeLatch.await();
     }
 }
