@@ -56,71 +56,12 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
-    public void generateRedTrendChart() {
-        // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=line-stack
-        int from = 0;
-        int to = 100;
-        int step = 100;
-        List<Bet> bets = historyManage.getBetHistory();
-        List<Integer> counts = new ArrayList<>();
-        Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
-        while (to < bets.size()){
-            List<NumberCount> numberCounts = generateTopRed(bets.subList(from,to));
-            for(NumberCount numberCount : numberCounts){
-                Integer number = numberCount.getNumber();
-                List<Integer> countList = numberCountsMap.get(number);
-                if(countList == null){
-                    countList = new ArrayList<>();
-                    numberCountsMap.put(number,countList);
-                }
-                countList.add(numberCount.getCount());
-            }
-            counts.add(to);
-            from += step;
-            to += step;
-        }
-
-        JSONObject option = new JSONObject();
-        option.put("title",new JSONObject().fluentPut("text","top red 趋势"));
-        option.put("tooltip",new JSONObject().fluentPut("trigger","axis"));
-        option.put("legend",new JSONObject().fluentPut("data",numberCountsMap.keySet()));
-        option.put("grid",new JSONObject().fluentPut("left","3%")
-                .fluentPut("right","4%")
-                .fluentPut("bottom","3%")
-                .fluentPut("containLabel",true)
-        );
-        option.put("xAxis",new JSONObject()
-                .fluentPut("type","category")
-                .fluentPut("boundaryGap",false)
-                .fluentPut("data",counts)
-        );
-        option.put("yAxis",new JSONObject().fluentPut("type","value"));
-        JSONArray series = new JSONArray();
-        for(Integer number : numberCountsMap.keySet()){
-            series.add(new JSONObject()
-                    .fluentPut("name",number)
-                    .fluentPut("type","line")
-                    .fluentPut("stack","次数")
-                    .fluentPut("data",numberCountsMap.get(number))
-            );
-        }
-        option.put("series",series);
-        log.info("generate trend chart done.");
-//        SerializerFeature.config()
-        String result = option.toString(SerializerFeature.UseSingleQuotes);
-
-        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
-        log.info("{}",result);
-    }
-
-    @Override
-    public void generateRedTrendChart2() {
+    public String generateRedTrendChart(int step) {
         // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
         int from = 0;
-        int to = 100;
-        int step = 100;
+        int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
-        List<Integer> counts = new ArrayList<>();
+        List<String> counts = new ArrayList<>();
         Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
         while (to < bets.size()){
             List<NumberCount> numberCounts = generateTopRed(bets.subList(from,to));
@@ -133,9 +74,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
                 }
                 countList.add(numberCount.getCount());
             }
-            counts.add(to);
+            counts.add(to+"");
             from += step;
-            to += step;
+            to = from + step;
         }
 
         JSONObject option = new JSONObject();
@@ -152,7 +93,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         sources.add(product);
         for(Integer number : numberCountsMap.keySet()){
             JSONArray nc = new JSONArray();
-            nc.add(number);
+            nc.add(number+"");
             nc.addAll(numberCountsMap.get(number));
             sources.add(nc);
         }
@@ -177,18 +118,18 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         option.put("series",series);
         log.info("generate red trend chart done.");
 //        SerializerFeature.config()
-        String result = option.toString(SerializerFeature.UseSingleQuotes);
+        String result = option.toString(SerializerFeature.UseSingleQuotes,SerializerFeature.PrettyFormat);
 
         result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
         log.info("{}",result);
+        return result;
     }
 
     @Override
-    public void generateBlueTrendChart2() {
+    public String generateBlueTrendChart(int step) {
         // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
         int from = 0;
-        int to = 100;
-        int step = 100;
+        int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
         List<String> counts = new ArrayList<>();
         Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
@@ -205,7 +146,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
             }
             counts.add(to+"");
             from += step;
-            to += step;
+            to = from + step;
         }
 
         JSONObject option = new JSONObject();
@@ -247,10 +188,11 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         option.put("series",series);
         log.info("generate blue trend chart done.");
 //        SerializerFeature.config()
-        String result = option.toString(SerializerFeature.UseSingleQuotes);
+        String result = option.toString(SerializerFeature.UseSingleQuotes,SerializerFeature.PrettyFormat);
 
         result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
         log.info("{}",result);
+        return result;
     }
 
 

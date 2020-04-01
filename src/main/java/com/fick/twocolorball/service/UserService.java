@@ -18,9 +18,9 @@ public interface UserService {
     String login(String userName,String password);
 
     /**
-     * 校验token有效性
+     * 校验指定用户的token的有效性
      * @param token
      * @return
      */
-    String checkToken(String token);
+    boolean checkToken(String token);
 }

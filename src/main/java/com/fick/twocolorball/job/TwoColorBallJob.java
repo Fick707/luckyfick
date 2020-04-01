@@ -26,17 +26,17 @@ public class TwoColorBallJob {
     public void run(){
         log.info("run two color ball job ...");
         // 先获取红球top
-        List<Integer> topReds = historyAnalysisService.getTopRed();
-        log.info("get top red {}.", JSON.toJSON(topReds));
+//        List<Integer> topReds = historyAnalysisService.getTopRed();
+//        log.info("get top red {}.", JSON.toJSON(topReds));
         // 获取蓝球top
-        List<Integer> topBlues = historyAnalysisService.getTopBlue();
-        log.info("get top blue {}.",JSON.toJSON(topBlues));
+//        List<Integer> topBlues = historyAnalysisService.getTopBlue();
+//        log.info("get top blue {}.",JSON.toJSON(topBlues));
 
         // top red 变化趋势图
-        historyAnalysisService.generateRedTrendChart2();
+//        historyAnalysisService.generateRedTrendChart();
 
         // top blue 变化趋势图
-        historyAnalysisService.generateBlueTrendChart2();
+//        historyAnalysisService.generateBlueTrendChart();
         log.info("run two color ball job done.");
     }
 }
