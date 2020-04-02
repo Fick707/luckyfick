@@ -37,7 +37,10 @@ public class TwoColorBallHistoryManage {
         return betHistory;
     }
 
-    private void loadHistory() {
+    /**
+     * 从历史文件中加载历史
+     */
+    public void loadHistory() {
         CommonFileReader commonFileReader = new CommonFileReader(historyFileName,null,0,null);
         List<String> lines = commonFileReader.readLines();
         if(CollectionUtils.isNotEmpty(lines)){

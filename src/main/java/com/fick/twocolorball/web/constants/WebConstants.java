@@ -1,9 +1,9 @@
 package com.fick.twocolorball.web.constants;
 
 /**
- * @name: GinaGatewayConstants
- * @program: gina-gateway
- * @description: GinaGateway模块常量
+ * @name: WebConstants
+ * @program: twocolorball
+ * @description: 模块常量
  * @author: figo.song
  * @created: 2019/12/12
  **/

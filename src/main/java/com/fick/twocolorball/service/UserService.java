@@ -18,6 +18,11 @@ public interface UserService {
     String login(String userName,String password);
 
     /**
+     * 用户登出
+     */
+    void logout();
+
+    /**
      * 校验指定用户的token的有效性
      * @param token
      * @return

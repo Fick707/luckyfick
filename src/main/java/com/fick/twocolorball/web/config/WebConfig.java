@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * @name: WebConfig
- * @program: gina-gateway
+ * @program: twocolorball
  * @description: web配置
  * @author: figo.song
  * @created: 2019/12/11
@@ -30,8 +30,7 @@ public class WebConfig {
         registration.addUrlPatterns("/*");
         Map<String, String> initParameters = new HashMap<String, String>(5);
         initParameters.put(WebConstants.CommonConstants.FILTER_INIT_PARAM_EXCLUSIONS,
-                        "/api/user/login,"
-                        + "/api/user/logout"
+                        "/api/user/login"
                         );
         registration.setInitParameters(initParameters);
         registration.setName("ssoFilter");

@@ -1,13 +1,12 @@
 package com.fick.twocolorball.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fick.twocolorball.biz.TwoColorBallHistoryManage;
+import com.fick.twocolorball.model.BallCount;
+import com.fick.twocolorball.model.BallCountTrend;
 import com.fick.twocolorball.model.Bet;
-import com.fick.twocolorball.model.NumberCount;
 import com.fick.twocolorball.service.HistoryAnalysisService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,175 +28,212 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     @Autowired
     TwoColorBallHistoryManage historyManage;
 
-    public static List<Integer> topRed = new ArrayList<>(33);
-
-    public static List<Integer> topBlue = new ArrayList<>(16);
-
     @Override
     public List<Integer> getTopRed() {
-        if(CollectionUtils.isEmpty(topRed)){
-            List<Bet> betList = historyManage.getBetHistory();
-            List<NumberCount> numberCounts = generateTopRed(betList);
-            log.info("red top:{}.", JSON.toJSON(numberCounts));
-            topRed = numberCounts.stream().map(NumberCount::getNumber).collect(Collectors.toList());
-        }
-        return topRed;
+        List<Bet> betList = historyManage.getBetHistory();
+        List<BallCount> ballCounts = generateTopRed(betList);
+        log.info("red top:{}.", JSON.toJSON(ballCounts));
+        return ballCounts.stream().map(BallCount::getBallNumber).collect(Collectors.toList());
     }
 
     @Override
     public List<Integer> getTopBlue() {
-        if(CollectionUtils.isEmpty(topBlue)){
-            List<Bet> betList = historyManage.getBetHistory();
-            List<NumberCount> numberCounts = generateTopBlue(betList);
-            log.info("blue top:{}.", JSON.toJSON(numberCounts));
-            topBlue = numberCounts.stream().map(NumberCount::getNumber).collect(Collectors.toList());
-        }
-        return topBlue;
+        List<Bet> betList = historyManage.getBetHistory();
+        List<BallCount> ballCounts = generateTopBlue(betList);
+        log.info("blue top:{}.", JSON.toJSON(ballCounts));
+        return ballCounts.stream().map(BallCount::getBallNumber).collect(Collectors.toList());
     }
 
     @Override
-    public String generateRedTrendChart(int step) {
-        // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
+    public BallCountTrend getRedBallCountTrend(int step) {
         int from = 0;
         int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
         List<String> counts = new ArrayList<>();
-        Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
+        Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
         while (to < bets.size()){
-            List<NumberCount> numberCounts = generateTopRed(bets.subList(from,to));
-            for(NumberCount numberCount : numberCounts){
-                Integer number = numberCount.getNumber();
-                List<Integer> countList = numberCountsMap.get(number);
+            List<BallCount> ballCounts = generateTopRed(bets.subList(from,to));
+            for(BallCount ballCount : ballCounts){
+                Integer number = ballCount.getBallNumber();
+                List<Integer> countList = ballNumberCountsMap.get(number);
                 if(countList == null){
                     countList = new ArrayList<>();
-                    numberCountsMap.put(number,countList);
+                    ballNumberCountsMap.put(number,countList);
                 }
-                countList.add(numberCount.getCount());
+                countList.add(ballCount.getCount());
             }
             counts.add(to+"");
             from += step;
             to = from + step;
         }
 
-        JSONObject option = new JSONObject();
-        option.put("title",new JSONObject().fluentPut("text","top red 趋势"));
-        option.put("tooltip",new JSONObject().fluentPut("trigger","axis").fluentPut("showContent",false));
-        option.put("legend",new JSONObject());
-        option.put("xAxis",new JSONObject().fluentPut("type","category"));
-        option.put("yAxis",new JSONObject().fluentPut("gridIndex",0));
-        option.put("grid",new JSONObject().fluentPut("top","55%"));
-        JSONArray sources = new JSONArray();
-        JSONArray product = new JSONArray();
-        product.add("product");
-        product.addAll(counts);
-        sources.add(product);
-        for(Integer number : numberCountsMap.keySet()){
-            JSONArray nc = new JSONArray();
-            nc.add(number+"");
-            nc.addAll(numberCountsMap.get(number));
-            sources.add(nc);
-        }
-        option.put("dataset",new JSONObject().fluentPut("source",sources));
-
-        JSONArray series = new JSONArray();
-        for(Integer number : numberCountsMap.keySet()){
-            series.add(new JSONObject()
-                    .fluentPut("smooth",true)
-                    .fluentPut("type","line")
-                    .fluentPut("seriesLayoutBy","row")
-            );
-        }
-        series.add(new JSONObject()
-                .fluentPut("type","pie")
-                .fluentPut("id","pie")
-                .fluentPut("radius","30%")
-                .fluentPut("center",new JSONArray().fluentAdd("50%").fluentAdd("25%"))
-                .fluentPut("label",new JSONObject().fluentPut("formatter","{b}: {@100} ({d}%)"))
-                .fluentPut("encode",new JSONObject().fluentPut("itemName","product").fluentPut("value",100).fluentPut("tooltip",100))
-        );
-        option.put("series",series);
-        log.info("generate red trend chart done.");
-//        SerializerFeature.config()
-        String result = option.toString(SerializerFeature.UseSingleQuotes,SerializerFeature.PrettyFormat);
-
-        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
-        log.info("{}",result);
+        BallCountTrend result = new BallCountTrend();
+        result.setCounts(counts);
+        result.setBallNumberCountsMap(ballNumberCountsMap);
         return result;
     }
 
     @Override
-    public String generateBlueTrendChart(int step) {
-        // 将生成的数据，放到echart上运行，看效果图：https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
+    public BallCountTrend getBlueBallCountTrend(int step) {
         int from = 0;
         int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
         List<String> counts = new ArrayList<>();
-        Map<Integer,List<Integer>> numberCountsMap = new HashMap<>();
+        Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
         while (to < bets.size()){
-            List<NumberCount> numberCounts = generateTopBlue(bets.subList(from,to));
-            for(NumberCount numberCount : numberCounts){
-                Integer number = numberCount.getNumber();
-                List<Integer> countList = numberCountsMap.get(number);
+            List<BallCount> ballCounts = generateTopBlue(bets.subList(from,to));
+            for(BallCount ballCount : ballCounts){
+                Integer number = ballCount.getBallNumber();
+                List<Integer> countList = ballNumberCountsMap.get(number);
                 if(countList == null){
                     countList = new ArrayList<>();
-                    numberCountsMap.put(number,countList);
+                    ballNumberCountsMap.put(number,countList);
                 }
-                countList.add(numberCount.getCount());
+                countList.add(ballCount.getCount());
             }
             counts.add(to+"");
             from += step;
             to = from + step;
         }
-
-        JSONObject option = new JSONObject();
-        option.put("title",new JSONObject().fluentPut("text","top red 趋势"));
-        option.put("tooltip",new JSONObject().fluentPut("trigger","axis").fluentPut("showContent",false));
-        option.put("legend",new JSONObject());
-        option.put("xAxis",new JSONObject().fluentPut("type","category"));
-        option.put("yAxis",new JSONObject().fluentPut("gridIndex",0));
-        option.put("grid",new JSONObject().fluentPut("top","55%"));
-        JSONArray sources = new JSONArray();
-        JSONArray product = new JSONArray();
-        product.add("product");
-        product.addAll(counts);
-        sources.add(product);
-        for(Integer number : numberCountsMap.keySet()){
-            JSONArray nc = new JSONArray();
-            nc.add(number+"");
-            nc.addAll(numberCountsMap.get(number));
-            sources.add(nc);
-        }
-        option.put("dataset",new JSONObject().fluentPut("source",sources));
-
-        JSONArray series = new JSONArray();
-        for(Integer number : numberCountsMap.keySet()){
-            series.add(new JSONObject()
-                    .fluentPut("smooth",true)
-                    .fluentPut("type","line")
-                    .fluentPut("seriesLayoutBy","row")
-            );
-        }
-        series.add(new JSONObject()
-                .fluentPut("type","pie")
-                .fluentPut("id","pie")
-                .fluentPut("radius","30%")
-                .fluentPut("center",new JSONArray().fluentAdd("50%").fluentAdd("25%"))
-                .fluentPut("label",new JSONObject().fluentPut("formatter","{b}: {@100} ({d}%)"))
-                .fluentPut("encode",new JSONObject().fluentPut("itemName","product").fluentPut("value",100).fluentPut("tooltip",100))
-        );
-        option.put("series",series);
-        log.info("generate blue trend chart done.");
-//        SerializerFeature.config()
-        String result = option.toString(SerializerFeature.UseSingleQuotes,SerializerFeature.PrettyFormat);
-
-        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
-        log.info("{}",result);
+        BallCountTrend result = new BallCountTrend();
+        result.setCounts(counts);
+        result.setBallNumberCountsMap(ballNumberCountsMap);
         return result;
     }
 
 
-    private List<NumberCount> generateTopRed(List<Bet> betList) {
-        Map<Integer,Integer> countMap = new HashMap<Integer,Integer>();
+    @Override
+    public List<BallCount> getTopRedInLast(int last) {
+        List<Bet> betList = getLastBets(last);
+        return generateTopRed(betList);
+    }
+
+    @Override
+    public List<BallCount> getTopBlueInLast(int last) {
+        List<Bet> betList = getLastBets(last);
+        return generateTopBlue(betList);
+    }
+
+    @Override
+    public Integer getRedBallCountInLast(int last, Integer ballNumber) {
+        List<BallCount> redBallCounts = getTopRedInLast(last);
+        if(CollectionUtils.isEmpty(redBallCounts)){
+            return 0;
+        }
+        for(BallCount ballCount : redBallCounts){
+            if(ballCount.getBallNumber().intValue() == ballNumber){
+                return ballCount.getCount();
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer getBlueBallCountInLast(int last, Integer ballNumber) {
+        List<BallCount> blueBallCounts = getTopBlueInLast(last);
+        if(CollectionUtils.isEmpty(blueBallCounts)){
+            return 0;
+        }
+        for(BallCount ballCount : blueBallCounts){
+            if(ballCount.getBallNumber().intValue() == ballNumber){
+                return ballCount.getCount();
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer getRedBallMissCountInLast(Integer ballNumber) {
+        return getRedBallMissCount(ballNumber);
+    }
+
+    @Override
+    public Integer getBlueBallMissCountInLast(Integer ballNumber) {
+        return getBlueBallMissCount(ballNumber);
+    }
+
+    @Override
+    public List<BallCount> getRedBallMissCounts() {
+        List<BallCount> redMissCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 33 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(getRedBallMissCount(i));
+            redMissCounts.add(ballMissCount);
+        }
+        Collections.sort(redMissCounts, Comparator.comparing(BallCount::getCount));
+        return redMissCounts;
+    }
+
+    @Override
+    public List<BallCount> getBlueBallMissCounts() {
+        List<BallCount> blueMissCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 16 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(getBlueBallMissCount(i));
+            blueMissCounts.add(ballMissCount);
+        }
+        Collections.sort(blueMissCounts, Comparator.comparing(BallCount::getCount));
+        return blueMissCounts;
+    }
+
+
+    /**
+     * 根据历史倒推，获取指定红色球号最近缺失的次数
+     * @param ballNumber
+     * @return
+     */
+    private Integer getRedBallMissCount(Integer ballNumber){
+        List<Bet> his = historyManage.getBetHistory();
+        Integer missCount = 0;
+        for(int i = his.size() - 1 ; i >= 0 ; i --){
+            Bet bet = his.get(i);
+            if(bet.getRed1().intValue() == ballNumber
+            || bet.getRed2().intValue() == ballNumber
+            || bet.getRed3().intValue() == ballNumber
+            || bet.getRed4().intValue() == ballNumber
+            || bet.getRed5().intValue() == ballNumber
+            || bet.getRed6().intValue() == ballNumber
+            ){
+                return missCount;
+            }
+            missCount ++;
+        }
+        return missCount;
+    }
+
+    /**
+     * 根据历史倒推，获取指定蓝色球号最近缺失的次数
+     * @param ballNumber
+     * @return
+     */
+    private Integer getBlueBallMissCount(Integer ballNumber){
+        List<Bet> his = historyManage.getBetHistory();
+        Integer missCount = 0;
+        for(int i = his.size() - 1 ; i >= 0 ; i --){
+            Bet bet = his.get(i);
+            if(bet.getBlue1().intValue() == ballNumber){
+                return missCount;
+            }
+            missCount ++;
+        }
+        return missCount;
+    }
+
+    private List<Bet> getLastBets(int last){
+        List<Bet> betList = historyManage.getBetHistory();
+        if(CollectionUtils.isEmpty(betList)){
+            return Lists.newArrayList();
+        }
+        if(betList.size() > last){
+            betList = betList.subList(betList.size() - last,betList.size());
+        }
+        return betList;
+    }
+
+    private List<BallCount> generateTopRed(List<Bet> betList) {
+        Map<Integer,Integer> countMap = new HashMap<>(33);
         if(CollectionUtils.isNotEmpty(betList)){
             betList.stream().forEach(item -> {
                 increase(item.getRed1(),countMap);
@@ -208,33 +244,29 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
                 increase(item.getRed6(),countMap);
             });
         }
-        List<NumberCount> numberCounts = new ArrayList<>();
-        for(Integer number : countMap.keySet()){
-            NumberCount numberCount = new NumberCount();
-            numberCount.setNumber(number);
-            numberCount.setCount(countMap.get(number));
-            numberCounts.add(numberCount);
-        }
-        Collections.sort(numberCounts, Comparator.comparing(NumberCount::getCount).reversed());
-        return numberCounts;
+        return convert2BallCountList(countMap);
     }
 
-    private List<NumberCount> generateTopBlue(List<Bet> betList) {
-        Map<Integer,Integer> countMap = new HashMap<Integer,Integer>();
+    private List<BallCount> convert2BallCountList(Map<Integer,Integer> countMap){
+        List<BallCount> ballCounts = new ArrayList<>();
+        for(Integer number : countMap.keySet()){
+            BallCount ballCount = new BallCount();
+            ballCount.setBallNumber(number);
+            ballCount.setCount(countMap.get(number));
+            ballCounts.add(ballCount);
+        }
+        Collections.sort(ballCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return ballCounts;
+    }
+
+    private List<BallCount> generateTopBlue(List<Bet> betList) {
+        Map<Integer,Integer> countMap = new HashMap<>();
         if(CollectionUtils.isNotEmpty(betList)){
             betList.stream().forEach(item -> {
                 increase(item.getBlue1(),countMap);
             });
         }
-        List<NumberCount> numberCounts = new ArrayList<>();
-        for(Integer number : countMap.keySet()){
-            NumberCount numberCount = new NumberCount();
-            numberCount.setNumber(number);
-            numberCount.setCount(countMap.get(number));
-            numberCounts.add(numberCount);
-        }
-        Collections.sort(numberCounts, Comparator.comparing(NumberCount::getCount).reversed());
-        return numberCounts;
+        return convert2BallCountList(countMap);
     }
 
     private void increase(Integer number,Map<Integer,Integer> countMap){

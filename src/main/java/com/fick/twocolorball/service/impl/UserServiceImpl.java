@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void logout() {
+        tokenCache.invalidate(adminUserName);
+    }
+
+    @Override
     public boolean checkToken(String token) {
         String value = tokenCache.getIfPresent(adminUserName);
         return StringUtils.isNotBlank(value) && StringUtils.equals(token,value);
