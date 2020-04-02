@@ -33,6 +33,6 @@ public class HistoryAnalysisController {
 
     @RequestMapping(value = "/topBlue", method = {RequestMethod.POST,RequestMethod.GET})
     public String topBlue(HttpServletRequest request, @RequestParam(value = "step",required = true) Integer step ) throws IOException {
-        return historyAnalysisService.generateRedTrendChart(step);
+        return historyAnalysisService.generateBlueTrendChart(step);
     }
 }
