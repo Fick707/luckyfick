@@ -11,10 +11,10 @@
   </parent>
 
   <groupId>com.fick</groupId>
-  <artifactId>twocolorball</artifactId>
+  <artifactId>luckyfick</artifactId>
   <packaging>jar</packaging>
   <version>1.0.0-SNAPSHOT</version>
-  <name>twocolorball</name>
+  <name>luckyfick</name>
   <dependencies>
     <!-- third part libs -->
     <!-- logging begin -->
@@ -110,7 +110,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <mainClass>com.fick.twocolorball.Application</mainClass>
+          <mainClass>com.fick.luckyfick.Application</mainClass>
         </configuration>
         <executions>
           <execution>
