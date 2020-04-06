@@ -37,7 +37,7 @@ public class UserController {
         if(StringUtils.isNotBlank(token)){
             Cookie cookie = new Cookie(WebConstants.CommonHttpHeader.HTTP_HEADER_KEY_TOKEN,token);
             cookie.setPath("/");
-            cookie.setMaxAge(2 * 60 * 60);
+            cookie.setMaxAge(7 * 24 * 60 * 60);
             response.addCookie(cookie);
             return token;
         } else {

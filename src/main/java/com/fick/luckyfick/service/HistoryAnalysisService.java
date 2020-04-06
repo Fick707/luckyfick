@@ -2,6 +2,7 @@ package com.fick.luckyfick.service;
 
 import com.fick.luckyfick.model.BallCount;
 import com.fick.luckyfick.model.BallCountTrend;
+import com.fick.luckyfick.model.BallMissCountTrend;
 
 import java.util.List;
 
@@ -94,4 +95,28 @@ public interface HistoryAnalysisService {
      * @return
      */
     List<BallCount> getBlueBallMissCounts();
+
+    /**
+     * 获取开奖历史中，红色球号最大的缺失次数
+     * @return
+     */
+    List<BallCount> getRedBallHisMaxMissCounts();
+
+    /**
+     * 获取开奖历史中，蓝色球号最大的缺失次数
+     * @return
+     */
+    List<BallCount> getBlueBallHisMaxMissCounts();
+
+    /**
+     * 获取开奖历史中，红色球号最大的缺失次数
+     * @return
+     */
+    BallMissCountTrend getRedBallHisMissCounts();
+
+    /**
+     * 获取开奖历史中，蓝色球号最大的缺失次数
+     * @return
+     */
+    BallMissCountTrend getBlueBallHisMissCounts();
 }

@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.fick.luckyfick.biz.TwoColorBallHistoryManage;
 import com.fick.luckyfick.model.BallCount;
 import com.fick.luckyfick.model.BallCountTrend;
+import com.fick.luckyfick.model.BallMissCountTrend;
 import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.service.BetService;
 import com.fick.luckyfick.service.HistoryAnalysisService;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     @Autowired
     TwoColorBallHistoryManage historyManage;
+
+    @Autowired
+    BetService betService;
 
     @Override
     public List<Integer> getTopRed() {
@@ -104,13 +108,13 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     @Override
     public List<BallCount> getTopRedInLast(int last) {
-        List<Bet> betList = getLastBets(last);
+        List<Bet> betList = historyManage.getLastBets(last);
         return generateTopRed(betList);
     }
 
     @Override
     public List<BallCount> getTopBlueInLast(int last) {
-        List<Bet> betList = getLastBets(last);
+        List<Bet> betList = historyManage.getLastBets(last);
         return generateTopBlue(betList);
     }
 
@@ -144,12 +148,12 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     @Override
     public Integer getRedBallMissCountInLast(Integer ballNumber) {
-        return getRedBallMissCount(ballNumber);
+        return historyManage.getRedBallMissCount(ballNumber);
     }
 
     @Override
     public Integer getBlueBallMissCountInLast(Integer ballNumber) {
-        return getBlueBallMissCount(ballNumber);
+        return historyManage.getBlueBallMissCount(ballNumber);
     }
 
     @Override
@@ -158,10 +162,10 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         for(int i = 1 ; i <= 33 ; i ++ ){
             BallCount ballMissCount = new BallCount();
             ballMissCount.setBallNumber(i);
-            ballMissCount.setCount(getRedBallMissCount(i));
+            ballMissCount.setCount(historyManage.getRedBallMissCount(i));
             redMissCounts.add(ballMissCount);
         }
-        Collections.sort(redMissCounts, Comparator.comparing(BallCount::getCount));
+        Collections.sort(redMissCounts, Comparator.comparing(BallCount::getCount).reversed());
         return redMissCounts;
     }
 
@@ -171,65 +175,65 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         for(int i = 1 ; i <= 16 ; i ++ ){
             BallCount ballMissCount = new BallCount();
             ballMissCount.setBallNumber(i);
-            ballMissCount.setCount(getBlueBallMissCount(i));
+            ballMissCount.setCount(historyManage.getBlueBallMissCount(i));
             blueMissCounts.add(ballMissCount);
         }
-        Collections.sort(blueMissCounts, Comparator.comparing(BallCount::getCount));
+        Collections.sort(blueMissCounts, Comparator.comparing(BallCount::getCount).reversed());
         return blueMissCounts;
     }
 
-
-    /**
-     * 根据历史倒推，获取指定红色球号最近缺失的次数
-     * @param ballNumber
-     * @return
-     */
-    private Integer getRedBallMissCount(Integer ballNumber){
-        List<Bet> his = historyManage.getBetHistory();
-        Integer missCount = 0;
-        for(int i = his.size() - 1 ; i >= 0 ; i --){
-            Bet bet = his.get(i);
-            if(bet.getRed1().intValue() == ballNumber
-            || bet.getRed2().intValue() == ballNumber
-            || bet.getRed3().intValue() == ballNumber
-            || bet.getRed4().intValue() == ballNumber
-            || bet.getRed5().intValue() == ballNumber
-            || bet.getRed6().intValue() == ballNumber
-            ){
-                return missCount;
-            }
-            missCount ++;
+    @Override
+    public List<BallCount> getRedBallHisMaxMissCounts() {
+        List<BallCount> redHisMissCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 33 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(historyManage.getRedMaxMissCount(i));
+            redHisMissCounts.add(ballMissCount);
         }
-        return missCount;
+        Collections.sort(redHisMissCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return redHisMissCounts;
     }
 
-    /**
-     * 根据历史倒推，获取指定蓝色球号最近缺失的次数
-     * @param ballNumber
-     * @return
-     */
-    private Integer getBlueBallMissCount(Integer ballNumber){
-        List<Bet> his = historyManage.getBetHistory();
-        Integer missCount = 0;
-        for(int i = his.size() - 1 ; i >= 0 ; i --){
-            Bet bet = his.get(i);
-            if(bet.getBlue1().intValue() == ballNumber){
-                return missCount;
-            }
-            missCount ++;
+    @Override
+    public List<BallCount> getBlueBallHisMaxMissCounts() {
+        List<BallCount> blueHisMissCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 16 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(historyManage.getBlueMaxMissCount(i));
+            blueHisMissCounts.add(ballMissCount);
         }
-        return missCount;
+        Collections.sort(blueHisMissCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return blueHisMissCounts;
     }
 
-    private List<Bet> getLastBets(int last){
-        List<Bet> betList = historyManage.getBetHistory();
-        if(CollectionUtils.isEmpty(betList)){
-            return Lists.newArrayList();
+    @Override
+    public BallMissCountTrend getRedBallHisMissCounts() {
+        Map<Integer,List<Integer>> missCountMap = new HashMap<>();
+        for(int i = 1 ; i <= 33 ; i ++ ){
+            missCountMap.put(i,historyManage.redBallHisMissCounts(i));
         }
-        if(betList.size() > last){
-            betList = betList.subList(betList.size() - last,betList.size());
+        BallMissCountTrend ballMissCountTrend = new BallMissCountTrend();
+        List<Integer> ballNumbers = new ArrayList<>();
+        ballNumbers.addAll(missCountMap.keySet());
+        ballMissCountTrend.setBallNumbers(ballNumbers);
+        ballMissCountTrend.setBallNumberMissCountsMap(missCountMap);
+        return ballMissCountTrend;
+    }
+
+    @Override
+    public BallMissCountTrend getBlueBallHisMissCounts() {
+        Map<Integer,List<Integer>> missCountMap = new HashMap<>();
+        for(int i = 1 ; i <= 16 ; i ++ ){
+            missCountMap.put(i,historyManage.blueBallHisMissCounts(i));
         }
-        return betList;
+        BallMissCountTrend ballMissCountTrend = new BallMissCountTrend();
+        List<Integer> ballNumbers = new ArrayList<>();
+        ballNumbers.addAll(missCountMap.keySet());
+        ballMissCountTrend.setBallNumbers(ballNumbers);
+        ballMissCountTrend.setBallNumberMissCountsMap(missCountMap);
+        return ballMissCountTrend;
     }
 
     private List<BallCount> generateTopRed(List<Bet> betList) {

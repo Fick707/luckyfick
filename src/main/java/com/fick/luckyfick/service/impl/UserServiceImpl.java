@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     private Cache<String,String> tokenCache = CacheBuilder.newBuilder()
             .maximumSize(10)
-            .expireAfterWrite(2, TimeUnit.HOURS)
+            .expireAfterWrite(7, TimeUnit.DAYS)
             .build();
 
     @Override
