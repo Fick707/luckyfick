@@ -21,11 +21,6 @@ public class BallMissCountTrend implements Serializable {
     private static final long serialVersionUID = -7588787160315775245L;
 
     /**
-     * 球号
-     */
-    private List<Integer> ballNumbers;
-
-    /**
      * 球号-缺失次数(s)映射
      */
     private Map<Integer,List<Integer>> ballNumberMissCountsMap;

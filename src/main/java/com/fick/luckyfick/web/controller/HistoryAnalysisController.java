@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -228,7 +229,16 @@ public class HistoryAnalysisController {
         JSONArray sources = new JSONArray();
         JSONArray product = new JSONArray();
         product.add("product");
-        product.addAll(ballMissCountTrend.getBallNumbers());
+        Collection<List<Integer>> valuess = ballMissCountTrend.getBallNumberMissCountsMap().values();
+        int max = 0;
+        for(List<Integer> values : valuess){
+            if(values.size() > max){
+                max = values.size();
+            }
+        }
+        for(int i = 1 ; i <= max ; i ++){
+            product.add(i+"");
+        }
         sources.add(product);
         for (Integer number : ballMissCountTrend.getBallNumberMissCountsMap().keySet()) {
             JSONArray nc = new JSONArray();

@@ -217,7 +217,6 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         BallMissCountTrend ballMissCountTrend = new BallMissCountTrend();
         List<Integer> ballNumbers = new ArrayList<>();
         ballNumbers.addAll(missCountMap.keySet());
-        ballMissCountTrend.setBallNumbers(ballNumbers);
         ballMissCountTrend.setBallNumberMissCountsMap(missCountMap);
         return ballMissCountTrend;
     }
@@ -231,7 +230,6 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         BallMissCountTrend ballMissCountTrend = new BallMissCountTrend();
         List<Integer> ballNumbers = new ArrayList<>();
         ballNumbers.addAll(missCountMap.keySet());
-        ballMissCountTrend.setBallNumbers(ballNumbers);
         ballMissCountTrend.setBallNumberMissCountsMap(missCountMap);
         return ballMissCountTrend;
     }
