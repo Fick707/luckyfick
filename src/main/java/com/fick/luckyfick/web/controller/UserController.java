@@ -1,18 +1,23 @@
 package com.fick.luckyfick.web.controller;
 
+import com.fick.luckyfick.constants.ResultCode;
+import com.fick.luckyfick.model.WebResult;
 import com.fick.luckyfick.service.UserService;
 import com.fick.luckyfick.web.constants.WebConstants;
+import com.fick.luckyfick.web.model.param.UserLoginParam;
+import com.fick.luckyfick.web.model.result.UserLoginResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @name: HistoryAnalysisController
@@ -30,18 +35,21 @@ public class UserController {
     UserService userService;
 
     @RequestMapping(value = "/login", method = {RequestMethod.POST,RequestMethod.GET})
-    public String login(HttpServletResponse response,
-                         @RequestParam(value = "userName") String userName,
-                         @RequestParam(value = "password")String password) throws IOException {
-        String token = userService.login(userName,password);
+    public WebResult<UserLoginResult> login(HttpServletResponse response, @RequestBody UserLoginParam param) throws IOException {
+        String token = userService.login(param.getUserName(),param.getPassword());
         if(StringUtils.isNotBlank(token)){
             Cookie cookie = new Cookie(WebConstants.CommonHttpHeader.HTTP_HEADER_KEY_TOKEN,token);
             cookie.setPath("/");
             cookie.setMaxAge(7 * 24 * 60 * 60);
             response.addCookie(cookie);
-            return token;
+            UserLoginResult loginResult = new UserLoginResult();
+            loginResult.setType(param.getType());
+            loginResult.setCurrentAuthority(Arrays.asList("admin"));
+            loginResult.setStatus("OK");
+            loginResult.setToken(token);
+            return WebResult.success(loginResult);
         } else {
-            return "user name or password error.";
+            return WebResult.failure(ResultCode.PARAM_ERROR_CODE.getCode(),ResultCode.PARAM_ERROR_CODE.getValue());
         }
     }
 
@@ -51,14 +59,14 @@ public class UserController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "logout",method = {RequestMethod.POST,RequestMethod.GET})
-    public String logout(HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/logout",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<String> logout(HttpServletResponse response) throws IOException {
         userService.logout();
         Cookie cookie = new Cookie(WebConstants.CommonHttpHeader.HTTP_HEADER_KEY_TOKEN,null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "logout done.";
+        return WebResult.success(ResultCode.SERVER_SUCCESS_CODE.getValue());
     }
 
 }
