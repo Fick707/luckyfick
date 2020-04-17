@@ -97,6 +97,18 @@ public interface HistoryAnalysisService {
     List<BallCount> getBlueBallMissCounts();
 
     /**
+     * 获取开奖历史中，红色球号最大的连续出现次数
+     * @return
+     */
+    List<BallCount> getRedBallHisMaxAppearCounts();
+
+    /**
+     * 获取开奖历史中，蓝色球号最大的连续出现次数
+     * @return
+     */
+    List<BallCount> getBlueBallHisMaxAppearCounts();
+
+    /**
      * 获取开奖历史中，红色球号最大的缺失次数
      * @return
      */

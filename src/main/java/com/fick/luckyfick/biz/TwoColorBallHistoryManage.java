@@ -100,6 +100,50 @@ public class TwoColorBallHistoryManage {
     }
 
     /**
+     * 获取指定红球历史上最大连接出现次数
+     * @param ballNumber
+     * @return
+     */
+    public int getRedMaxAppearCount(Integer ballNumber){
+        int maxAppearCount = 0;
+        int currentAppearCount = 0;
+        List<Bet> betList = getBetHistory();
+        for(Bet bet : betList){
+            if(!BetUtils.isRedBallIn(bet,ballNumber)){
+                if(currentAppearCount > maxAppearCount){
+                    maxAppearCount = currentAppearCount;
+                }
+                currentAppearCount = 0;
+            } else {
+                currentAppearCount ++;
+            }
+        }
+        return maxAppearCount;
+    }
+
+    /**
+     * 获取指定蓝球历史上最大连接出现次数
+     * @param ballNumber
+     * @return
+     */
+    public int getBlueMaxAppearCount(Integer ballNumber){
+        int maxAppearCount = 0;
+        int currentAppearCount = 0;
+        List<Bet> betList = getBetHistory();
+        for(Bet bet : betList){
+            if(!BetUtils.isBlueBallIn(bet,ballNumber)){
+                if(currentAppearCount > maxAppearCount){
+                    maxAppearCount = currentAppearCount;
+                }
+                currentAppearCount = 0;
+            } else {
+                currentAppearCount ++;
+            }
+        }
+        return maxAppearCount;
+    }
+
+    /**
      * 获取指定红球历史上最大的缺失次数
      * @param ballNumber
      * @return
@@ -122,7 +166,7 @@ public class TwoColorBallHistoryManage {
     }
 
     /**
-     * 获取指定蓝球历史上最大的缺失次数
+     * 获取指定蓝球历史上最大的连续缺失次数
      * @param ballNumber
      * @return
      */

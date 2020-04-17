@@ -9,7 +9,7 @@ import java.util.List;
  * ClassName: WebResult.java
  * Description: rpc结果对象
  *
- * @author figo.song@carloha.com
+ * @author figo.song
  * @version 1.0.0
  * @date 2019/12/06
  */

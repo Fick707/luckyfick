@@ -5,6 +5,7 @@ import com.fick.luckyfick.model.WebResult;
 import com.fick.luckyfick.service.UserService;
 import com.fick.luckyfick.web.constants.WebConstants;
 import com.fick.luckyfick.web.model.param.UserLoginParam;
+import com.fick.luckyfick.web.model.result.UserDetailResult;
 import com.fick.luckyfick.web.model.result.UserLoginResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +68,16 @@ public class UserController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return WebResult.success(ResultCode.SERVER_SUCCESS_CODE.getValue());
+    }
+
+    /**
+     * 登出
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/currentUser",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<UserDetailResult> currentUser() throws IOException {
+        return WebResult.success(new UserDetailResult());
     }
 
 }

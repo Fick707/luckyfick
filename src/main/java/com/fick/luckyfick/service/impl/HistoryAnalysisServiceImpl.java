@@ -183,29 +183,55 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
+    public List<BallCount> getRedBallHisMaxAppearCounts() {
+        List<BallCount> redHisMaxAppearCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 33 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(historyManage.getRedMaxAppearCount(i));
+            redHisMaxAppearCounts.add(ballMissCount);
+        }
+        Collections.sort(redHisMaxAppearCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return redHisMaxAppearCounts;
+    }
+
+    @Override
+    public List<BallCount> getBlueBallHisMaxAppearCounts() {
+        List<BallCount> blueHisMaxMissCounts = new ArrayList<>();
+        for(int i = 1 ; i <= 16 ; i ++ ){
+            BallCount ballMissCount = new BallCount();
+            ballMissCount.setBallNumber(i);
+            ballMissCount.setCount(historyManage.getBlueMaxAppearCount(i));
+            blueHisMaxMissCounts.add(ballMissCount);
+        }
+        Collections.sort(blueHisMaxMissCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return blueHisMaxMissCounts;
+    }
+
+    @Override
     public List<BallCount> getRedBallHisMaxMissCounts() {
-        List<BallCount> redHisMissCounts = new ArrayList<>();
+        List<BallCount> redHisMaxMissCounts = new ArrayList<>();
         for(int i = 1 ; i <= 33 ; i ++ ){
             BallCount ballMissCount = new BallCount();
             ballMissCount.setBallNumber(i);
             ballMissCount.setCount(historyManage.getRedMaxMissCount(i));
-            redHisMissCounts.add(ballMissCount);
+            redHisMaxMissCounts.add(ballMissCount);
         }
-        Collections.sort(redHisMissCounts, Comparator.comparing(BallCount::getCount).reversed());
-        return redHisMissCounts;
+        Collections.sort(redHisMaxMissCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return redHisMaxMissCounts;
     }
 
     @Override
     public List<BallCount> getBlueBallHisMaxMissCounts() {
-        List<BallCount> blueHisMissCounts = new ArrayList<>();
+        List<BallCount> blueHisMaxMissCounts = new ArrayList<>();
         for(int i = 1 ; i <= 16 ; i ++ ){
             BallCount ballMissCount = new BallCount();
             ballMissCount.setBallNumber(i);
             ballMissCount.setCount(historyManage.getBlueMaxMissCount(i));
-            blueHisMissCounts.add(ballMissCount);
+            blueHisMaxMissCounts.add(ballMissCount);
         }
-        Collections.sort(blueHisMissCounts, Comparator.comparing(BallCount::getCount).reversed());
-        return blueHisMissCounts;
+        Collections.sort(blueHisMaxMissCounts, Comparator.comparing(BallCount::getCount).reversed());
+        return blueHisMaxMissCounts;
     }
 
     @Override

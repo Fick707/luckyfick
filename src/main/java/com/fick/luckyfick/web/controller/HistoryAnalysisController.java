@@ -8,6 +8,7 @@ import com.fick.luckyfick.model.BallCountTrend;
 import com.fick.luckyfick.model.BallMissCountTrend;
 import com.fick.luckyfick.model.WebResult;
 import com.fick.luckyfick.service.HistoryAnalysisService;
+import com.fick.luckyfick.web.model.param.HistoryParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,25 +37,25 @@ public class HistoryAnalysisController {
     /**
      * 根据指定历史步长，获取红球出现频次趋势图数据
      * @param request
-     * @param step
+     * @param param
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/redBallCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<JSONArray> redBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
-        return WebResult.success(generateAppearTrendData(historyAnalysisService.getRedBallCountTrend(step)));
+    public WebResult<JSONArray> redBallCountTrend(HttpServletRequest request, @RequestBody HistoryParam param ) throws IOException {
+        return WebResult.success(generateAppearTrendData(historyAnalysisService.getRedBallCountTrend(param.getStep())));
     }
 
     /**
      * 根据指定历史步长，获取蓝球出现频次趋势图数据
      * @param request
-     * @param step
+     * @param param
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "/blueBallCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<JSONArray> blueBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
-        return WebResult.success(generateAppearTrendData(historyAnalysisService.getBlueBallCountTrend(step)));
+    public WebResult<JSONArray> blueBallCountTrend(HttpServletRequest request, @RequestBody HistoryParam param ) throws IOException {
+        return WebResult.success(generateAppearTrendData(historyAnalysisService.getBlueBallCountTrend(param.getStep())));
     }
 
     /**
@@ -81,25 +81,25 @@ public class HistoryAnalysisController {
     /**
      * 生成最近last次开奖结果中，各红球出现次数
      * @param request
-     * @param last
+     * @param param
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/redBallCountInLastBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<JSONArray> redBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
-        return WebResult.success(generateBallCount(historyAnalysisService.getTopRedInLast(last)));
+    public WebResult<JSONArray> redBallCountInLastBar(HttpServletRequest request, @RequestBody HistoryParam param){
+        return WebResult.success(generateBallCount(historyAnalysisService.getTopRedInLast(param.getLast())));
     }
 
     /**
      * 生成最近last次开奖结果中，各蓝球出现次数
      * @param request
-     * @param last
+     * @param param
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/blueBallCountInLastBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<JSONArray> blueBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
-        return WebResult.success(generateBallCount(historyAnalysisService.getTopBlueInLast(last)));
+    public WebResult<JSONArray> blueBallCountInLastBar(HttpServletRequest request, @RequestBody HistoryParam param){
+        return WebResult.success(generateBallCount(historyAnalysisService.getTopBlueInLast(param.getLast())));
     }
 
     /**
@@ -123,6 +123,26 @@ public class HistoryAnalysisController {
     }
 
     /**
+     * 生成历史开奖结果中，各红球最大连续出现次数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/redBallMaxAppearCountBar",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<JSONArray> redBallMaxAppearCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getRedBallHisMaxAppearCounts()));
+    }
+
+    /**
+     * 生成历史开奖结果中，各蓝球最大连续出现次数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/blueBallMaxAppearCountBar",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<JSONArray> blueBallMaxAppearCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getBlueBallHisMaxAppearCounts()));
+    }
+
+    /**
      * 生成历史开奖结果中，各红球最大缺失次数
      * @return
      */
@@ -133,7 +153,7 @@ public class HistoryAnalysisController {
     }
 
     /**
-     * 生成最近开奖结果中，各蓝球缺失次数
+     * 生成历史开奖结果中，各蓝球最大缺失次数
      * @return
      */
     @ResponseBody
