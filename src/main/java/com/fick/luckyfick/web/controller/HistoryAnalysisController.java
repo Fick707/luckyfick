@@ -6,6 +6,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fick.luckyfick.model.BallCount;
 import com.fick.luckyfick.model.BallCountTrend;
 import com.fick.luckyfick.model.BallMissCountTrend;
+import com.fick.luckyfick.model.WebResult;
 import com.fick.luckyfick.service.HistoryAnalysisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,8 +42,8 @@ public class HistoryAnalysisController {
      * @throws IOException
      */
     @RequestMapping(value = "/redBallCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public String redBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
-        return generateTrend(historyAnalysisService.getRedBallCountTrend(step));
+    public WebResult<JSONArray> redBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
+        return WebResult.success(generateAppearTrendData(historyAnalysisService.getRedBallCountTrend(step)));
     }
 
     /**
@@ -52,8 +54,8 @@ public class HistoryAnalysisController {
      * @throws IOException
      */
     @RequestMapping(value = "/blueBallCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public String blueBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
-        return generateTrend(historyAnalysisService.getBlueBallCountTrend(step));
+    public WebResult<JSONArray> blueBallCountTrend(HttpServletRequest request, @RequestParam(value = "step") Integer step ) throws IOException {
+        return WebResult.success(generateAppearTrendData(historyAnalysisService.getBlueBallCountTrend(step)));
     }
 
     /**
@@ -62,8 +64,8 @@ public class HistoryAnalysisController {
      * @throws IOException
      */
     @RequestMapping(value = "/redBallHisMissCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public String redBallHisMissCountTrend() throws IOException {
-        return generateMissCountTrend(historyAnalysisService.getRedBallHisMissCounts());
+    public WebResult<JSONArray> redBallHisMissCountTrend() throws IOException {
+        return WebResult.success(generateAbsenceTrendData(historyAnalysisService.getRedBallHisMissCounts()));
     }
 
     /**
@@ -72,8 +74,8 @@ public class HistoryAnalysisController {
      * @throws IOException
      */
     @RequestMapping(value = "/blueBallHisMissCountTrend", method = {RequestMethod.POST,RequestMethod.GET})
-    public String blueBallHisMissCountTrend() throws IOException {
-        return generateMissCountTrend(historyAnalysisService.getBlueBallHisMissCounts());
+    public WebResult<JSONArray> blueBallHisMissCountTrend() throws IOException {
+        return WebResult.success(generateAbsenceTrendData(historyAnalysisService.getBlueBallHisMissCounts()));
     }
 
     /**
@@ -84,8 +86,8 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/redBallCountInLastBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String redBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
-        return generateBallCountBar(historyAnalysisService.getTopRedInLast(last),"红球近"+last+"期出现次数");
+    public WebResult<JSONArray> redBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
+        return WebResult.success(generateBallCount(historyAnalysisService.getTopRedInLast(last)));
     }
 
     /**
@@ -96,8 +98,8 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/blueBallCountInLastBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String blueBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
-        return generateBallCountBar(historyAnalysisService.getTopBlueInLast(last),"蓝球近"+last+"期出现次数");
+    public WebResult<JSONArray> blueBallCountInLastBar(HttpServletRequest request, @RequestParam(value = "last") Integer last){
+        return WebResult.success(generateBallCount(historyAnalysisService.getTopBlueInLast(last)));
     }
 
     /**
@@ -106,8 +108,8 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/redBallMissCountBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String redBallMissCountBar(){
-        return generateBallCountBar(historyAnalysisService.getRedBallMissCounts(),"红球缺失次数");
+    public WebResult<JSONArray> redBallMissCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getRedBallMissCounts()));
     }
 
     /**
@@ -116,8 +118,8 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/blueBallMissCountBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String blueBallMissCountBar(){
-        return generateBallCountBar(historyAnalysisService.getBlueBallMissCounts(),"蓝球缺失次数");
+    public WebResult<JSONArray> blueBallMissCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getBlueBallMissCounts()));
     }
 
     /**
@@ -126,8 +128,8 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/redBallMaxMissCountBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String redBallMaxMissCountBar(){
-        return generateBallCountBar(historyAnalysisService.getRedBallHisMaxMissCounts(),"红球历史最大缺失次数");
+    public WebResult<JSONArray> redBallMaxMissCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getRedBallHisMaxMissCounts()));
     }
 
     /**
@@ -136,8 +138,24 @@ public class HistoryAnalysisController {
      */
     @ResponseBody
     @RequestMapping(value = "/blueBallMaxMissCountBar",method = {RequestMethod.POST,RequestMethod.GET})
-    public String blueBallMaxMissCountBar(){
-        return generateBallCountBar(historyAnalysisService.getBlueBallHisMaxMissCounts(),"蓝球历史最大缺失次数");
+    public WebResult<JSONArray> blueBallMaxMissCountBar(){
+        return WebResult.success(generateBallCount(historyAnalysisService.getBlueBallHisMaxMissCounts()));
+    }
+
+    /**
+     * 生成次数柱状图数据
+     * @param ballCounts
+     * @return
+     */
+    private JSONArray generateBallCount(List<BallCount> ballCounts){
+        JSONArray jsonArray = new JSONArray();
+        for(BallCount ballCount : ballCounts){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("x",ballCount.getBallNumber()+"");
+            jsonObject.put("y",ballCount.getCount());
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 
     /**
@@ -163,110 +181,52 @@ public class HistoryAnalysisController {
 
     /**
      * 根据历史统计结果，拼装出趋势图所需要的数据
-     * 趋势数据可以放到该页面展示：
-     * https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
      * @param ballCountTrend
      * @return
      */
-    private String generateTrend(BallCountTrend ballCountTrend) {
-        JSONObject option = new JSONObject();
-        option.put("title", new JSONObject().fluentPut("text", "top red 趋势"));
-        option.put("tooltip", new JSONObject().fluentPut("trigger", "axis").fluentPut("showContent", false));
-        option.put("legend", new JSONObject());
-        option.put("xAxis", new JSONObject().fluentPut("type", "category"));
-        option.put("yAxis", new JSONObject().fluentPut("gridIndex", 0));
-        option.put("grid", new JSONObject().fluentPut("top", "55%"));
-        JSONArray sources = new JSONArray();
-        JSONArray product = new JSONArray();
-        product.add("product");
-        product.addAll(ballCountTrend.getCounts());
-        sources.add(product);
-        for (Integer number : ballCountTrend.getBallNumberCountsMap().keySet()) {
-            JSONArray nc = new JSONArray();
-            nc.add(number + "");
-            nc.addAll(ballCountTrend.getBallNumberCountsMap().get(number));
-            sources.add(nc);
+    private JSONArray generateAppearTrendData(BallCountTrend ballCountTrend){
+        JSONArray jsonArray = new JSONArray();
+        List<Integer> counts = ballCountTrend.getCounts();
+        for(Integer key : ballCountTrend.getBallNumberCountsMap().keySet()){
+            List<Integer> ballCounts = ballCountTrend.getBallNumberCountsMap().get(key);
+            for(int i = 0 ; i < ballCounts.size() ; i ++) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("key", key + "");
+                jsonObject.put("x", counts.get(i));
+                jsonObject.put("y",ballCounts.get(i));
+                jsonArray.add(jsonObject);
+            }
         }
-        option.put("dataset", new JSONObject().fluentPut("source", sources));
-
-        JSONArray series = new JSONArray();
-        for (int i = 0 ; i < ballCountTrend.getBallNumberCountsMap().size() ; i ++) {
-            series.add(new JSONObject()
-                    .fluentPut("smooth", true)
-                    .fluentPut("type", "line")
-                    .fluentPut("seriesLayoutBy", "row")
-            );
-        }
-        series.add(new JSONObject()
-                .fluentPut("type", "pie")
-                .fluentPut("id", "pie")
-                .fluentPut("radius", "30%")
-                .fluentPut("center", new JSONArray().fluentAdd("50%").fluentAdd("25%"))
-                .fluentPut("label", new JSONObject().fluentPut("formatter", "{b}: {@100} ({d}%)"))
-                .fluentPut("encode", new JSONObject().fluentPut("itemName", "product").fluentPut("value", 100).fluentPut("tooltip", 100))
-        );
-        option.put("series", series);
-        String result = option.toString(SerializerFeature.UseSingleQuotes, SerializerFeature.PrettyFormat);
-        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
-        return result;
+        return jsonArray;
     }
 
     /**
      * 根据历史统计结果，拼装出趋势图所需要的数据
-     * 趋势数据可以放到该页面展示：
-     * https://www.echartsjs.com/examples/zh/editor.html?c=dataset-link
      * @param ballMissCountTrend
      * @return
      */
-    private String generateMissCountTrend(BallMissCountTrend ballMissCountTrend) {
-        JSONObject option = new JSONObject();
-        option.put("title", new JSONObject().fluentPut("text", "历史缺失次数趋势"));
-        option.put("tooltip", new JSONObject().fluentPut("trigger", "axis").fluentPut("showContent", false));
-        option.put("legend", new JSONObject());
-        option.put("xAxis", new JSONObject().fluentPut("type", "category"));
-        option.put("yAxis", new JSONObject().fluentPut("gridIndex", 0));
-        option.put("grid", new JSONObject().fluentPut("top", "55%"));
-        JSONArray sources = new JSONArray();
-        JSONArray product = new JSONArray();
-        product.add("product");
-        Collection<List<Integer>> valuess = ballMissCountTrend.getBallNumberMissCountsMap().values();
-        int max = 0;
-        for(List<Integer> values : valuess){
-            if(values.size() > max){
-                max = values.size();
+    private JSONArray generateAbsenceTrendData(BallMissCountTrend ballMissCountTrend){
+        JSONArray jsonArray = new JSONArray();
+        int maxSize = 0;
+        for(List<Integer> ballCounts : ballMissCountTrend.getBallNumberMissCountsMap().values()){
+            if(ballCounts.size() > maxSize){
+                maxSize = ballCounts.size();
             }
         }
-        for(int i = 1 ; i <= max ; i ++){
-            product.add(i+"");
+        List<Integer> counts = new ArrayList<>();
+        for(int i = 1 ; i <= maxSize ; i ++){
+            counts.add(i);
         }
-        sources.add(product);
-        for (Integer number : ballMissCountTrend.getBallNumberMissCountsMap().keySet()) {
-            JSONArray nc = new JSONArray();
-            nc.add(number + "");
-            nc.addAll(ballMissCountTrend.getBallNumberMissCountsMap().get(number));
-            sources.add(nc);
+        for(Integer key : ballMissCountTrend.getBallNumberMissCountsMap().keySet()){
+            List<Integer> ballCounts = ballMissCountTrend.getBallNumberMissCountsMap().get(key);
+            for(int i = 0 ; i < maxSize ; i ++) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("key", key + "");
+                jsonObject.put("x", counts.get(i));
+                jsonObject.put("y",ballCounts.size()<(i + 1) ? 0: ballCounts.get(i));
+                jsonArray.add(jsonObject);
+            }
         }
-        option.put("dataset", new JSONObject().fluentPut("source", sources));
-
-        JSONArray series = new JSONArray();
-        for (int i = 0 ; i < ballMissCountTrend.getBallNumberMissCountsMap().size() ; i ++) {
-            series.add(new JSONObject()
-                    .fluentPut("smooth", true)
-                    .fluentPut("type", "line")
-                    .fluentPut("seriesLayoutBy", "row")
-            );
-        }
-        series.add(new JSONObject()
-                .fluentPut("type", "pie")
-                .fluentPut("id", "pie")
-                .fluentPut("radius", "30%")
-                .fluentPut("center", new JSONArray().fluentAdd("50%").fluentAdd("25%"))
-                .fluentPut("label", new JSONObject().fluentPut("formatter", "{b}: {@100} ({d}%)"))
-                .fluentPut("encode", new JSONObject().fluentPut("itemName", "product").fluentPut("value", 100).fluentPut("tooltip", 100))
-        );
-        option.put("series", series);
-        String result = option.toString(SerializerFeature.UseSingleQuotes, SerializerFeature.PrettyFormat);
-        result = result.replaceAll("'(\\w+)'(\\s*:\\s*)", "$1$2");
-        return result;
+        return jsonArray;
     }
 }

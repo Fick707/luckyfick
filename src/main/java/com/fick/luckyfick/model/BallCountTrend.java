@@ -23,7 +23,7 @@ public class BallCountTrend implements Serializable {
     /**
      * 历史期数
      */
-    private List<String> counts;
+    private List<Integer> counts;
 
     /**
      * 球号-出现频次(s)映射

@@ -53,7 +53,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         int from = 0;
         int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
-        List<String> counts = new ArrayList<>();
+        List<Integer> counts = new ArrayList<>();
         Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
         while (to < bets.size()){
             List<BallCount> ballCounts = generateTopRed(bets.subList(from,to));
@@ -66,7 +66,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
                 }
                 countList.add(ballCount.getCount());
             }
-            counts.add(to+"");
+            counts.add(to);
             from += step;
             to = from + step;
         }
@@ -82,7 +82,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         int from = 0;
         int to = from + step;
         List<Bet> bets = historyManage.getBetHistory();
-        List<String> counts = new ArrayList<>();
+        List<Integer> counts = new ArrayList<>();
         Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
         while (to < bets.size()){
             List<BallCount> ballCounts = generateTopBlue(bets.subList(from,to));
@@ -95,7 +95,7 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
                 }
                 countList.add(ballCount.getCount());
             }
-            counts.add(to+"");
+            counts.add(to);
             from += step;
             to = from + step;
         }
