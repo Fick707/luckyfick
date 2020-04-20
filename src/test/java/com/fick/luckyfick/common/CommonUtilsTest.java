@@ -25,5 +25,4 @@ public class CommonUtilsTest extends BaseTest {
         log.info("password:{}",password);
     }
 
-
 }

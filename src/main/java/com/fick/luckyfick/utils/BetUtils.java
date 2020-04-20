@@ -38,8 +38,8 @@ public class BetUtils {
 
     /**
      * 根据指定投注和开奖结果，判断中奖级别
-     * @param bet
-     * @param checkBet
+     * @param bet 中奖号码
+     * @param checkBet 要判断的号码
      * @return
      */
     public static PrizeType getPrizeType(Bet bet, Bet checkBet){

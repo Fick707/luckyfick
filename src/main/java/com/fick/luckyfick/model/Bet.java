@@ -70,4 +70,8 @@ public class Bet implements Serializable {
      * 蓝1
      */
     private Integer blue1;
+
+    public String getResult(){
+        return red1+"\t"+red2+"\t"+red3+"\t"+red4+"\t"+red5+"\t"+red6+"\t"+blue1+".";
+    }
 }
