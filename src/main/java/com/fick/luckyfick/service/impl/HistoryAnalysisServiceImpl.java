@@ -55,8 +55,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         List<Bet> bets = historyManage.getBetHistory();
         List<Integer> counts = new ArrayList<>();
         Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
+        // 用to< bets.size判断，将最后一些不足step的数据弃用
         while (to < bets.size()){
-            List<BallCount> ballCounts = generateTopRed(bets.subList(from,to));
+            List<BallCount> ballCounts = generateTopRed(bets.subList(from,to <= bets.size() ? to : bets.size()));
             for(BallCount ballCount : ballCounts){
                 Integer number = ballCount.getBallNumber();
                 List<Integer> countList = ballNumberCountsMap.get(number);
@@ -84,8 +85,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
         List<Bet> bets = historyManage.getBetHistory();
         List<Integer> counts = new ArrayList<>();
         Map<Integer,List<Integer>> ballNumberCountsMap = new HashMap<>();
+        // 用to< bets.size判断，将最后一些不足step的数据弃用
         while (to < bets.size()){
-            List<BallCount> ballCounts = generateTopBlue(bets.subList(from,to));
+            List<BallCount> ballCounts = generateTopBlue(bets.subList(from,to <= bets.size() ? to : bets.size()));
             for(BallCount ballCount : ballCounts){
                 Integer number = ballCount.getBallNumber();
                 List<Integer> countList = ballNumberCountsMap.get(number);
@@ -262,6 +264,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     private List<BallCount> generateTopRed(List<Bet> betList) {
         Map<Integer,Integer> countMap = new HashMap<>(33);
+        for(int i = 1 ; i <= 33 ; i ++){
+            countMap.put(i,0);
+        }
         if(CollectionUtils.isNotEmpty(betList)){
             betList.stream().forEach(item -> {
                 increase(item.getRed1(),countMap);
@@ -289,6 +294,9 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     private List<BallCount> generateTopBlue(List<Bet> betList) {
         Map<Integer,Integer> countMap = new HashMap<>();
+        for(int i = 1 ; i <= 16 ; i ++){
+            countMap.put(i,0);
+        }
         if(CollectionUtils.isNotEmpty(betList)){
             betList.stream().forEach(item -> {
                 increase(item.getBlue1(),countMap);

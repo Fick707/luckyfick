@@ -26,7 +26,7 @@ public class BetTest extends BaseTest {
     @Test
     public void testBetResult(){
         // 获取最近n次的中奖号码
-        List<Bet> luckyBets = twoColorBallHistoryManage.getLastBets(10);
+        List<Bet> luckyBets = twoColorBallHistoryManage.getLastBets(1);
         List<Bet> toCheck = new ArrayList<>();
         toCheck.add(betOne(1,4,6,24,25,28,15));
         toCheck.add(betOne(6,8,12,15,25,32,15));
