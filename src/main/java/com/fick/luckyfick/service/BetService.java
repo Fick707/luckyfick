@@ -2,6 +2,9 @@ package com.fick.luckyfick.service;
 
 import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.model.PrizeType;
+import com.fick.luckyfick.tcb.strategy.TcbStrategy;
+
+import java.util.List;
 
 /**
  * @program: luckyfick
@@ -34,4 +37,11 @@ public interface BetService {
      * @return
      */
     PrizeType getPrizeType(Bet bet, Bet checkBet);
+
+    /**
+     * 根据自己定义的策略随机生成一个投注
+     * @param strategies
+     * @return
+     */
+    Bet getOneLuckyBet(List<TcbStrategy> strategies);
 }

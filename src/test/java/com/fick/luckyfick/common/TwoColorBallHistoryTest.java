@@ -18,7 +18,7 @@ import java.util.List;
  * @author: figo.song
  * @created: 2020/4/20
  **/
-public class BetTest extends BaseTest {
+public class TwoColorBallHistoryTest extends BaseTest {
 
     @Autowired
     TwoColorBallHistoryManage twoColorBallHistoryManage;
@@ -42,6 +42,28 @@ public class BetTest extends BaseTest {
                     System.out.println("result : " + type.getName());
                 }
             });
+        }
+    }
+
+    @Test
+    public void testSecondPrize(){
+        // 跑一下历史数据，看看一二等奖是否重复出现过
+        List<Bet> luckyBets = twoColorBallHistoryManage.getBetHistory();
+        for(Bet checkBet : luckyBets){
+            for(Bet luckyBet : luckyBets){
+                if(checkBet.getIndex() == luckyBet.getIndex()){
+                    continue;
+                }
+                PrizeType type = BetUtils.getPrizeType(luckyBet,checkBet);
+                if(type.ordinal() == 1){
+                    System.err.println("first prize appear again."+checkBet.getResult());
+                    System.err.println("this.code:"+checkBet.getCode()+"that.code:"+luckyBet.getCode());
+                }
+                if(type.ordinal() == 2){
+                    System.err.println("second prize appear again."+checkBet.getResult());
+                    System.err.println("this.code:"+checkBet.getCode()+"that.code:"+luckyBet.getCode());
+                }
+            }
         }
     }
 

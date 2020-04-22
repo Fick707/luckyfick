@@ -33,6 +33,11 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     BetService betService;
 
     @Override
+    public List<Bet> getBetHistory() {
+        return historyManage.getBetHistory();
+    }
+
+    @Override
     public List<Integer> getTopRed() {
         List<Bet> betList = historyManage.getBetHistory();
         List<BallCount> ballCounts = generateTopRed(betList);
@@ -118,6 +123,16 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     public List<BallCount> getTopBlueInLast(int last) {
         List<Bet> betList = historyManage.getLastBets(last);
         return generateTopBlue(betList);
+    }
+
+    @Override
+    public Integer getRedBallContinuousAppearCount(Integer ballNumber) {
+        return historyManage.getRedBallContinuousAppearCount(ballNumber);
+    }
+
+    @Override
+    public Integer getBlueBallContinuousAppearCount(Integer ballNumber) {
+        return historyManage.getBlueBallContinuousAppearCount(ballNumber);
     }
 
     @Override

@@ -100,6 +100,42 @@ public class TwoColorBallHistoryManage {
     }
 
     /**
+     * 获取最近红球连接出现次数
+     * @param ballNumber
+     * @return
+     */
+    public Integer getRedBallContinuousAppearCount(Integer ballNumber){
+        List<Bet> his = getBetHistory();
+        Integer appearCount = 0;
+        for(int i = his.size() - 1 ; i >= 0 ; i --){
+            if(BetUtils.isRedBallIn(his.get(i),ballNumber)){
+                appearCount ++;
+            } else {
+                return appearCount;
+            }
+        }
+        return appearCount;
+    }
+
+    /**
+     * 获取最近蓝球连接出现次数
+     * @param ballNumber
+     * @return
+     */
+    public Integer getBlueBallContinuousAppearCount(Integer ballNumber){
+        List<Bet> his = getBetHistory();
+        Integer appearCount = 0;
+        for(int i = his.size() - 1 ; i >= 0 ; i --){
+            if(BetUtils.isBlueBallIn(his.get(i),ballNumber)){
+                appearCount ++;
+            } else {
+                return appearCount;
+            }
+        }
+        return appearCount;
+    }
+
+    /**
      * 获取指定红球历史上最大连接出现次数
      * @param ballNumber
      * @return

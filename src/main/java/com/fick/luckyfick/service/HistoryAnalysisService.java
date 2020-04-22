@@ -3,6 +3,7 @@ package com.fick.luckyfick.service;
 import com.fick.luckyfick.model.BallCount;
 import com.fick.luckyfick.model.BallCountTrend;
 import com.fick.luckyfick.model.BallMissCountTrend;
+import com.fick.luckyfick.model.Bet;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ import java.util.List;
  * @create: 2020/3/29
  **/
 public interface HistoryAnalysisService {
+
+    /**
+     * 获取历史中奖结果
+     * @return
+     */
+    List<Bet> getBetHistory();
 
     /**
      * 根据历史所有开奖结果，按出现次数排序红球
@@ -53,6 +60,18 @@ public interface HistoryAnalysisService {
      * @return
      */
     List<BallCount> getTopBlueInLast(int last);
+
+    /**
+     * 获取指定红球最近连续出现次数
+     * @return
+     */
+    Integer getRedBallContinuousAppearCount(Integer ballNumber);
+
+    /**
+     * 获取指定蓝球最近连续出现次数
+     * @return
+     */
+    Integer getBlueBallContinuousAppearCount(Integer ballNumber);
 
     /**
      * 根据最近N次开奖结果，获取指定红色球号的出现次数

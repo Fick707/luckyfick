@@ -72,6 +72,6 @@ public class Bet implements Serializable {
     private Integer blue1;
 
     public String getResult(){
-        return red1+"\t"+red2+"\t"+red3+"\t"+red4+"\t"+red5+"\t"+red6+"\t"+blue1+".";
+        return red1+","+red2+","+red3+","+red4+","+red5+","+red6+","+blue1+".";
     }
 }
