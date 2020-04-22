@@ -23,7 +23,7 @@ public class RedBallPreStrategyExcludeByContinuousAppeared extends BaseStrategy 
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 33 ; ballNumber ++ ){
             int count = historyAnalysisService.getRedBallContinuousAppearCount(ballNumber);
-            if(count >= threshold){
+            if(count > threshold){
                 context.getRedBallExcluded().add(ballNumber);
             }
         }

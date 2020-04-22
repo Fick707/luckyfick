@@ -1,7 +1,7 @@
 package com.fick.luckyfick.common;
 
 import com.fick.luckyfick.BaseTest;
-import com.fick.luckyfick.biz.TwoColorBallHistoryManage;
+import com.fick.luckyfick.biz.TcbHistoryManage;
 import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.utils.BetUtils;
@@ -21,12 +21,12 @@ import java.util.List;
 public class TwoColorBallHistoryTest extends BaseTest {
 
     @Autowired
-    TwoColorBallHistoryManage twoColorBallHistoryManage;
+    TcbHistoryManage tcbHistoryManage;
 
     @Test
     public void testBetResult(){
         // 获取最近n次的中奖号码
-        List<Bet> luckyBets = twoColorBallHistoryManage.getLastBets(1);
+        List<Bet> luckyBets = tcbHistoryManage.getLastBets(1);
         List<Bet> toCheck = new ArrayList<>();
         toCheck.add(betOne(1,4,6,24,25,28,15));
         toCheck.add(betOne(6,8,12,15,25,32,15));
@@ -48,7 +48,7 @@ public class TwoColorBallHistoryTest extends BaseTest {
     @Test
     public void testSecondPrize(){
         // 跑一下历史数据，看看一二等奖是否重复出现过
-        List<Bet> luckyBets = twoColorBallHistoryManage.getBetHistory();
+        List<Bet> luckyBets = tcbHistoryManage.getBetHistory();
         for(Bet checkBet : luckyBets){
             for(Bet luckyBet : luckyBets){
                 if(checkBet.getIndex() == luckyBet.getIndex()){
@@ -65,18 +65,6 @@ public class TwoColorBallHistoryTest extends BaseTest {
                 }
             }
         }
-    }
-
-    private Bet betOne(Integer red1,Integer red2,Integer red3,Integer red4,Integer red5, Integer red6,Integer blue1){
-        Bet bet = new Bet();
-        bet.setRed1(red1);
-        bet.setRed2(red2);
-        bet.setRed3(red3);
-        bet.setRed4(red4);
-        bet.setRed5(red5);
-        bet.setRed6(red6);
-        bet.setBlue1(blue1);
-        return bet;
     }
 
 }

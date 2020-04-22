@@ -1,6 +1,7 @@
 package com.fick.luckyfick.biz;
 
-import com.fick.luckyfick.dao.TwoColorBallHistoryDAO;
+import com.alibaba.fastjson.JSON;
+import com.fick.luckyfick.dao.TcbHistoryDAO;
 import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.utils.BetUtils;
 import com.google.common.collect.Lists;
@@ -21,10 +22,10 @@ import java.util.List;
  **/
 @Component
 @Slf4j
-public class TwoColorBallHistoryManage {
+public class TcbHistoryManage {
 
     @Autowired
-    TwoColorBallHistoryDAO twoColorBallHistoryDAO;
+    TcbHistoryDAO tcbHistoryDAO;
 
     /**
      * 历史中奖记录
@@ -38,6 +39,34 @@ public class TwoColorBallHistoryManage {
         log.info("init two color ball history done.");
     }
 
+    /**
+     * 根据期号获取历史中奖号码
+     * @param code
+     * @return
+     */
+    public Bet getLuckyBetByCode(Integer code){
+        List<Bet> his = getBetHistory();
+        if(CollectionUtils.isEmpty(his)){
+            return null;
+        }
+        // 从最新往前找
+        for(int i = his.size() - 1 ; i >= 0 ; i --){
+            Bet luckyBet = his.get(i);
+            if(code.intValue() == luckyBet.getCode()){
+                return luckyBet;
+            }
+            // 如果期号已经很小了，直接返回null;
+            if(luckyBet.getCode() < code){
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取历史中奖号码列表，所有
+     * @return
+     */
     public List<Bet> getBetHistory(){
         return betHistory;
     }
@@ -46,7 +75,9 @@ public class TwoColorBallHistoryManage {
      * 从历史文件中加载历史
      */
     public void loadHistory() {
-        betHistory = twoColorBallHistoryDAO.loadHistory();
+        log.info("loading tcb lucky bets history ...");
+        betHistory = tcbHistoryDAO.loadHistory();
+        log.info("load tcb lucky bets history done,size:{}.",betHistory.size());
     }
 
     /**
@@ -63,6 +94,15 @@ public class TwoColorBallHistoryManage {
             betList = betList.subList(betList.size() - last,betList.size());
         }
         return betList;
+    }
+
+    /**
+     * 根据历史记录，获取最新一期的期号
+     * @return
+     */
+    public Integer getLatestCode(){
+        Bet latest = betHistory.get(betHistory.size() -1);
+        return latest.getCode();
     }
 
     /**
@@ -261,6 +301,16 @@ public class TwoColorBallHistoryManage {
             }
         }
         return missCounts;
+    }
+
+    /**
+     * 添加中奖历史
+     * @param bet
+     * @return
+     */
+    public Integer addBetHistory(Bet bet){
+        log.info("add bet history {}.", JSON.toJSON(bet));
+        return tcbHistoryDAO.addHistory(bet);
     }
 
 

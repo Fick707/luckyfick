@@ -1,6 +1,5 @@
 package com.fick.luckyfick.tcb.strategy.impl.blue.pre;
 
-import com.fick.luckyfick.service.HistoryAnalysisService;
 import com.fick.luckyfick.tcb.strategy.BlueBallPreStrategy;
 import com.fick.luckyfick.tcb.strategy.TcbStrategyContext;
 import com.fick.luckyfick.tcb.strategy.impl.BaseStrategy;
@@ -39,7 +38,7 @@ public class BlueBallPreStrategyExcludeByAppearLastN extends BaseStrategy implem
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 16 ; ballNumber ++ ){
             int count = historyAnalysisService.getBlueBallCountInLast(lastN,ballNumber);
-            if(count >= threshold){
+            if(count > threshold){
                 context.getBlueBallExcluded().add(ballNumber);
             }
         }

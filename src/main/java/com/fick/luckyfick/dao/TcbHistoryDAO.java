@@ -10,7 +10,7 @@ import java.util.List;
  * @author: figo.song
  * @create: 2020/4/7
  **/
-public interface TwoColorBallHistoryDAO {
+public interface TcbHistoryDAO {
 
     /**
      * 加载所有历史记录
@@ -21,18 +21,8 @@ public interface TwoColorBallHistoryDAO {
     /**
      * 添加历史记录
      * @param bet
+     * @return bet index
      */
-    void addHistory(Bet bet);
+    Integer addHistory(Bet bet);
 
-    /**
-     * 从历史记录中获取最后一条，用于id自增
-     * @return
-     */
-    Bet getLastBet();
-
-    /**
-     * 根据历史记录，生成自增id
-     * @return
-     */
-    Integer generateIndex();
 }

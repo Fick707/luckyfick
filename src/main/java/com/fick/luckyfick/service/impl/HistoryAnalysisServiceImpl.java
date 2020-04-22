@@ -1,7 +1,7 @@
 package com.fick.luckyfick.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.fick.luckyfick.biz.TwoColorBallHistoryManage;
+import com.fick.luckyfick.biz.TcbHistoryManage;
 import com.fick.luckyfick.model.BallCount;
 import com.fick.luckyfick.model.BallCountTrend;
 import com.fick.luckyfick.model.BallMissCountTrend;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     @Autowired
-    TwoColorBallHistoryManage historyManage;
+    TcbHistoryManage historyManage;
 
     @Autowired
     BetService betService;

@@ -1,10 +1,12 @@
 package com.fick.luckyfick.dao.impl.file;
 
-import com.fick.common.utils.file.CommonFileReader;
-import com.fick.luckyfick.dao.TwoColorBallHistoryDAO;
+import com.fick.common.utils.file.AbsoluteFileReader;
+import com.fick.common.utils.file.CommonFileWriter;
+import com.fick.luckyfick.dao.TcbHistoryDAO;
 import com.fick.luckyfick.model.Bet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,14 +20,15 @@ import java.util.List;
  **/
 @Component
 @Slf4j
-public class TwoColorBallHistoryDAOImpl implements TwoColorBallHistoryDAO {
+public class TcbHistoryDAOImpl implements TcbHistoryDAO {
 
-    private static final String historyFileName = "/twocolorball/twocolorball.rec";
+    @Value("${com.fick.luckyfick.tcb.his.file}")
+    private String historyFileName;
 
     @Override
     public List<Bet> loadHistory() {
         log.info("load bet history from file");
-        CommonFileReader commonFileReader = new CommonFileReader(historyFileName,null,0,null);
+        AbsoluteFileReader commonFileReader = new AbsoluteFileReader(historyFileName,"#",0,null);
         List<String> lines = commonFileReader.readLines();
         if(CollectionUtils.isNotEmpty(lines)){
             List<Bet> his = new ArrayList<>();
@@ -51,18 +54,39 @@ public class TwoColorBallHistoryDAOImpl implements TwoColorBallHistoryDAO {
     }
 
     @Override
-    public void addHistory(Bet bet) {
-
+    public Integer addHistory(Bet bet) {
+        bet.setIndex(generateIndex());
+        CommonFileWriter fileWriter = new CommonFileWriter(historyFileName);
+        fileWriter.append(String.format("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+                bet.getIndex(),
+                bet.getCode(),
+                bet.getDate(),
+                bet.getWeek(),
+                bet.getRed1(),
+                bet.getRed2(),
+                bet.getRed3(),
+                bet.getRed4(),
+                bet.getRed5(),
+                bet.getRed6(),
+                bet.getBlue1()
+        ));
+        return bet.getIndex();
     }
 
-    @Override
-    public Bet getLastBet() {
+    /**
+     * 从历史记录中获取最后一条，用于id自增
+     * @return
+     */
+    private Bet getLastBet() {
         List<Bet> his = loadHistory();
         return his.get(his.size() - 1);
     }
 
-    @Override
-    public Integer generateIndex() {
+    /**
+     * 根据历史记录，生成自增id
+     * @return
+     */
+    private Integer generateIndex() {
         return getLastBet().getIndex() + 1;
     }
 }

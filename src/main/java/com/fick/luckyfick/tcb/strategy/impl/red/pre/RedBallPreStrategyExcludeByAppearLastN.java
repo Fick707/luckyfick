@@ -38,7 +38,7 @@ public class RedBallPreStrategyExcludeByAppearLastN extends BaseStrategy impleme
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 33 ; ballNumber ++ ){
             int count = historyAnalysisService.getRedBallCountInLast(lastN,ballNumber);
-            if(count >= threshold){
+            if(count > threshold){
                 context.getRedBallExcluded().add(ballNumber);
             }
         }
