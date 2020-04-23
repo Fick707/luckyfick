@@ -2,18 +2,18 @@ package com.fick.luckyfick.common;
 
 import com.alibaba.fastjson.JSON;
 import com.fick.luckyfick.BaseTest;
-import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.service.BetService;
 import com.fick.luckyfick.tcb.strategy.TcbStrategy;
 import com.fick.luckyfick.tcb.strategy.impl.TcbStrategyBuilder;
+import com.fick.luckyfick.tcb.strategy.impl.blue.init.BlueBallPreStrategyInitPool;
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByAppearLastN;
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByContinuousAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyIncludeByAbsence;
-import com.fick.luckyfick.tcb.strategy.impl.blue.init.BlueBallPreStrategyInitPool;
+import com.fick.luckyfick.tcb.strategy.impl.red.init.RedBallPreStrategyInitPool;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByAppearLastN;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByContinuousAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyIncludeByAbsence;
-import com.fick.luckyfick.tcb.strategy.impl.red.init.RedBallPreStrategyInitPool;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -54,7 +54,7 @@ public class BetServiceImplTest extends BaseTest {
                 .add(new BlueBallPreStrategyIncludeByAbsence(60))
                 .build();
 
-        Bet luckyBet = betService.getOneLuckyBet(strategies);
+        MyBet luckyBet = betService.getOneLuckyBet(strategies);
         System.out.println("result:"+ JSON.toJSONString(luckyBet));
     }
 }

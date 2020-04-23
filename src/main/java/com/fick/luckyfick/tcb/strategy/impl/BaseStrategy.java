@@ -1,6 +1,7 @@
 package com.fick.luckyfick.tcb.strategy.impl;
 
 import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.service.HistoryAnalysisService;
 import com.fick.luckyfick.tcb.strategy.TcbStrategy;
@@ -37,10 +38,35 @@ public abstract class BaseStrategy implements TcbStrategy {
         }
         return false;
     }
+
+    /**
+     * 是否与历史一等奖相同
+     */
+    protected boolean isSameFirstPrizeAppeared(MyBet bet){
+        for(Bet luckyBet : historyAnalysisService.getBetHistory()){
+            PrizeType prizeType = BetUtils.getPrizeType(luckyBet,bet);
+            if( prizeType.ordinal() == PrizeType.First.ordinal() ){
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * 是否与历史二等奖相同
      */
     protected boolean isSameSecondPrizeAppeared(Bet bet){
+        for(Bet luckyBet : historyAnalysisService.getBetHistory()){
+            PrizeType prizeType = BetUtils.getPrizeType(luckyBet,bet);
+            if( prizeType.ordinal() == PrizeType.Second.ordinal() ){
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 是否与历史二等奖相同
+     */
+    protected boolean isSameSecondPrizeAppeared(MyBet bet){
         for(Bet luckyBet : historyAnalysisService.getBetHistory()){
             PrizeType prizeType = BetUtils.getPrizeType(luckyBet,bet);
             if( prizeType.ordinal() == PrizeType.Second.ordinal() ){

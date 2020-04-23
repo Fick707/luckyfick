@@ -1,6 +1,5 @@
 package com.fick.luckyfick.biz;
 
-import com.alibaba.fastjson.JSON;
 import com.fick.luckyfick.dao.TcbHistoryDAO;
 import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.utils.BetUtils;
@@ -103,6 +102,11 @@ public class TcbHistoryManage {
     public Integer getLatestCode(){
         Bet latest = betHistory.get(betHistory.size() -1);
         return latest.getCode();
+    }
+
+    public Long getLatestDate(){
+        Bet latest = betHistory.get(betHistory.size() -1);
+        return latest.getDate();
     }
 
     /**
@@ -303,15 +307,15 @@ public class TcbHistoryManage {
         return missCounts;
     }
 
-    /**
-     * 添加中奖历史
-     * @param bet
-     * @return
-     */
-    public Integer addBetHistory(Bet bet){
-        log.info("add bet history {}.", JSON.toJSON(bet));
-        return tcbHistoryDAO.addHistory(bet);
-    }
+//    /**
+//     * 添加中奖历史
+//     * @param bet
+//     * @return
+//     */
+//    public Integer addBetHistory(Bet bet){
+//        log.info("add bet history {}.", JSON.toJSON(bet));
+//        return tcbHistoryDAO.addHistory(bet);
+//    }
 
     /**
      * 从官网获取中奖历史并合并到系统中

@@ -3,6 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <properties>
     <common.utils.version>1.0.0-SNAPSHOT</common.utils.version>
+    <ucloud-sdk-java-usms.version>0.8.2.9-release</ucloud-sdk-java-usms.version>
   </properties>
   <parent>
     <groupId>com.fick</groupId>
@@ -15,6 +16,7 @@
   <packaging>jar</packaging>
   <version>1.0.0-SNAPSHOT</version>
   <name>luckyfick</name>
+
   <dependencies>
     <!-- third part libs -->
     <!-- logging begin -->
@@ -80,9 +82,14 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-quartz</artifactId>
     </dependency>
+    <dependency>
+      <groupId>cn.ucloud</groupId>
+      <artifactId>ucloud-sdk-java-usms</artifactId>
+      <version>${ucloud-sdk-java-usms.version}</version>
+    </dependency>
   </dependencies>
   <build>
-    <finalName>twocolorball</finalName>
+    <finalName>luckyfick</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

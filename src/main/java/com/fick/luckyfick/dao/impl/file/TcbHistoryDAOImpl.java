@@ -110,7 +110,7 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
                 int firstId = generateIndex();
                 for(Bet bet : betHistoryDTO.getBets()){
                     if(bet.getCode() <= maxCode){
-                        log.info("code to old.ignore and break.");
+                        log.info("code to old.ignore and break {}.",JSON.toJSONString(bet));
                         break;
                     }
                     bet.setIndex(firstId ++);

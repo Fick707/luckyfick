@@ -1,6 +1,6 @@
 package com.fick.luckyfick.tcb.strategy;
 
-import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.MyBet;
 import lombok.Data;
 import lombok.ToString;
 
@@ -51,7 +51,7 @@ public class TcbStrategyContext {
     /**
      * 最终结果
      */
-    private Bet luckyBet = new Bet();
+    private MyBet luckyBet = new MyBet();
 
     /**
      * 红球是否ok了

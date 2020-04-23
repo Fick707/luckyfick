@@ -1,12 +1,22 @@
 package com.fick.luckyfick.service.impl;
 
 import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.service.BetService;
 import com.fick.luckyfick.service.HistoryAnalysisService;
 import com.fick.luckyfick.tcb.strategy.*;
+import com.fick.luckyfick.tcb.strategy.impl.TcbStrategyBuilder;
+import com.fick.luckyfick.tcb.strategy.impl.blue.after.BlueBallAfterStrategyExcludeByFirstPrizeAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.blue.init.BlueBallPreStrategyInitPool;
+import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByAppearLastN;
+import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByContinuousAppeared;
+import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyIncludeByAbsence;
+import com.fick.luckyfick.tcb.strategy.impl.red.after.RedBallAfterStrategyExcludeBySecondPrizeAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.red.init.RedBallPreStrategyInitPool;
+import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByAppearLastN;
+import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByContinuousAppeared;
+import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyIncludeByAbsence;
 import com.fick.luckyfick.utils.BetUtils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +59,7 @@ public class BetServiceImpl implements BetService {
     }
 
     @Override
-    public Bet getOneLuckyBet(List<TcbStrategy> strategies) {
+    public MyBet getOneLuckyBet(List<TcbStrategy> strategies) {
         if(strategies == null){
             strategies = new ArrayList<>();
         }
@@ -108,6 +118,96 @@ public class BetServiceImpl implements BetService {
         drawRed(luckyContext,redBallInitStrategies,redBallPreStrategies,redBallAfterStrategies);
         drawBlue(luckyContext,blueBallInitStrategies,blueBallPreStrategies,blueBallAfterStrategies);
         return luckyContext.getLuckyBet();
+    }
+
+    @Override
+    public MyBet tripleLucky() {
+        log.info("generate triple lucky bet.");
+        List<TcbStrategy> strategies = new TcbStrategyBuilder()
+                // red strategies
+                // 根据近100次，随机池2000
+                .add(new RedBallPreStrategyInitPool(2000,100))
+                // 近100次出现次数>=30,则直接排除
+                .add(new RedBallPreStrategyExcludeByAppearLastN(100,30))
+                // 近100将出现次数<=9,则直接添加
+                .add(new RedBallPreStrategyIncludeByAbsence(9))
+                // 最近连接出现次数 >= 6,则直接排除
+                .add(new RedBallPreStrategyExcludeByContinuousAppeared(6))
+                // 最近连接缺失22次，直接选
+                .add(new RedBallPreStrategyIncludeByAbsence(22))
+                // 如果与历史二等奖重复，直接放弃
+                .add(new RedBallAfterStrategyExcludeBySecondPrizeAppeared())
+
+                // blue strategies
+                .add(new BlueBallPreStrategyInitPool(1000,100))
+                // 近100期出现次数>=15,则直接排除
+                .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
+                // 最近连接出现次数 >= 4,则直接排除
+                .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+                // 最近连接缺失60次，直接选
+                .add(new BlueBallPreStrategyIncludeByAbsence(60))
+                // 如果与历史一等奖重复，直接放弃
+                .add(new BlueBallAfterStrategyExcludeByFirstPrizeAppeared())
+                .build();
+        MyBet tripleLucky = getOneLuckyBet(strategies);
+        tripleLucky.setMultiple(3);
+        return tripleLucky;
+    }
+
+    @Override
+    public MyBet doubleLucky() {
+        log.info("generate double lucky bet.");
+        List<TcbStrategy> strategies = new TcbStrategyBuilder()
+                // red strategies
+                // 根据近100次，随机池3000
+                .add(new RedBallPreStrategyInitPool(3000,100))
+                // 近100次出现次数>=60,则直接排除
+                .add(new RedBallPreStrategyExcludeByAppearLastN(100,50))
+                // 最近连接出现次数 >= 7,则直接排除
+                .add(new RedBallPreStrategyExcludeByContinuousAppeared(7))
+                // 最近连接缺失40次，直接选
+                .add(new RedBallPreStrategyIncludeByAbsence(40))
+                // 如果与历史二等奖重复，直接放弃
+                .add(new RedBallAfterStrategyExcludeBySecondPrizeAppeared())
+
+                // blue strategies
+                .add(new BlueBallPreStrategyInitPool(2000,100))
+                // 近100期出现次数>=15,则直接排除
+                .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
+                // 最近连接出现次数 >= 4,则直接排除
+                .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+                // 最近连接缺失60次，直接选
+                .add(new BlueBallPreStrategyIncludeByAbsence(100))
+                // 如果与历史一等奖重复，直接放弃
+                .add(new BlueBallAfterStrategyExcludeByFirstPrizeAppeared())
+                .build();
+        MyBet doubleLucky = getOneLuckyBet(strategies);
+        doubleLucky.setMultiple(2);
+        return doubleLucky;
+    }
+
+    @Override
+    public MyBet lucky() {
+        log.info("generate lucky bet.");
+        List<TcbStrategy> strategies = new TcbStrategyBuilder()
+                // red strategies
+                // 根据近100次，随机池5000
+                .add(new RedBallPreStrategyInitPool(5000,100))
+                // 近100次出现次数>=50,则直接排除
+                .add(new RedBallPreStrategyExcludeByAppearLastN(100,50))
+                // 最近连接出现次数 >= 7,则直接排除
+                .add(new RedBallPreStrategyExcludeByContinuousAppeared(7))
+
+                // blue strategies
+                .add(new BlueBallPreStrategyInitPool(2000,100))
+                // 近100期出现次数>=35,则直接排除
+                .add(new BlueBallPreStrategyExcludeByAppearLastN(100,30))
+                // 最近连接出现次数 >= 4,则直接排除
+                .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+                .build();
+        MyBet lucky = getOneLuckyBet(strategies);
+        lucky.setMultiple(1);
+        return lucky;
     }
 
     /**

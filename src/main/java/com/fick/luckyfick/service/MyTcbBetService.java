@@ -8,7 +8,7 @@ import com.fick.luckyfick.model.MyBet;
  * @author: figo.song
  * @create: 2020/4/22
  **/
-public interface MyTcbBetHistoryService {
+public interface MyTcbBetService {
 
     /**
      * 添加我的投注记录
@@ -16,4 +16,14 @@ public interface MyTcbBetHistoryService {
      * @return
      */
     Integer addMyBet(MyBet myBet);
+
+    /**
+     * 生成最新一期的我的投注
+     */
+    void generateMyBet();
+
+    /**
+     * 检查最新一期的投注是否中奖
+     */
+    void checkResult();
 }

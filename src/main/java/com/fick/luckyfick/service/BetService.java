@@ -1,6 +1,7 @@
 package com.fick.luckyfick.service;
 
 import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.tcb.strategy.TcbStrategy;
 
@@ -43,5 +44,23 @@ public interface BetService {
      * @param strategies
      * @return
      */
-    Bet getOneLuckyBet(List<TcbStrategy> strategies);
+    MyBet getOneLuckyBet(List<TcbStrategy> strategies);
+
+    /**
+     * 生成3倍注
+     * @return
+     */
+    MyBet tripleLucky();
+
+    /**
+     * 生成1倍注
+     * @return
+     */
+    MyBet doubleLucky();
+
+    /**
+     * 生成1倍注
+     * @return
+     */
+    MyBet lucky();
 }

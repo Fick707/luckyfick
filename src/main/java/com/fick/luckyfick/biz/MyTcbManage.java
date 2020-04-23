@@ -57,7 +57,9 @@ public class MyTcbManage {
      */
     public Integer addMyBet(MyBet myBet){
         log.info("add my bet {}.", JSON.toJSON(myBet));
-        return myTcbDAO.addMyBet(myBet);
+        Integer index = myTcbDAO.addMyBet(myBet);
+        loadHistory();
+        return index;
     }
 
     /**
@@ -65,7 +67,7 @@ public class MyTcbManage {
      * @param code
      * @return
      */
-    List<MyBet> getByCode(Integer code){
+    public List<MyBet> getByCode(Integer code){
         List<MyBet> his = getMyBetHistory();
         List<MyBet> myBets = new ArrayList<>();
         if(CollectionUtils.isEmpty(his)){
