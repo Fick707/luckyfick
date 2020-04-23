@@ -25,4 +25,10 @@ public interface TcbHistoryDAO {
      */
     Integer addHistory(Bet bet);
 
+    /**
+     * 从官网获取历史中奖号码，只获取最新的
+     * @return
+     */
+    void fetchFromOfficial();
+
 }

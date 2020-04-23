@@ -1,7 +1,5 @@
 package com.fick.luckyfick.service;
 
-import com.fick.luckyfick.model.Bet;
-
 /**
  * @program: luckyfick
  * @description: 双色球中奖历史服务
@@ -11,9 +9,7 @@ import com.fick.luckyfick.model.Bet;
 public interface TcbBetHistoryService {
 
     /**
-     * 添加中奖历史
-     * @param bet
-     * @return
+     * 从官网获取中奖历史并合并到系统中
      */
-    Integer addBetHistory(Bet bet);
+    void mergeTcbBetHistoryFromOfficial();
 }

@@ -155,7 +155,7 @@ public class HistoryBetUtils {
         return betList;
     }
 
-    private static Integer getWeek(String week){
+    public static Integer getWeek(String week){
         switch (week){
             case "二":return 2;
             case "四":return 4;

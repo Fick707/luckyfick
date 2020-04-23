@@ -1,16 +1,23 @@
 package com.fick.luckyfick.dao.impl.file;
 
+import com.alibaba.fastjson.JSON;
 import com.fick.common.utils.file.AbsoluteFileReader;
 import com.fick.common.utils.file.CommonFileWriter;
+import com.fick.common.utils.http.HttpClient;
 import com.fick.luckyfick.dao.TcbHistoryDAO;
+import com.fick.luckyfick.dao.http.handler.BetHistoryResponseHandler;
 import com.fick.luckyfick.model.Bet;
+import com.fick.luckyfick.model.BetHistoryDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: luckyfick
@@ -24,6 +31,12 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
 
     @Value("${com.fick.luckyfick.tcb.his.file}")
     private String historyFileName;
+
+    @Value("${com.fick.luckyfick.tcb.his.query.url}")
+    private String tcbHistoryFetchUrl;
+
+    @Autowired
+    BetHistoryResponseHandler betHistoryResponseHandler;
 
     @Override
     public List<Bet> loadHistory() {
@@ -55,7 +68,10 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
 
     @Override
     public Integer addHistory(Bet bet) {
-        bet.setIndex(generateIndex());
+        log.info("add tcb bet history {}.", JSON.toJSONString(bet));
+        if(bet.getIndex() == null) {
+            bet.setIndex(generateIndex());
+        }
         CommonFileWriter fileWriter = new CommonFileWriter(historyFileName);
         fileWriter.append(String.format("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
                 bet.getIndex(),
@@ -71,6 +87,39 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
                 bet.getBlue1()
         ));
         return bet.getIndex();
+    }
+
+    @Override
+    public void fetchFromOfficial() {
+        log.info("fetch tcb bet history from official.");
+        Map<String,String> params = new HashMap<>(2);
+        params.put("name","ssq");
+        params.put("issueCount","50");
+        Map<String,String> headers = new HashMap<>(6);
+        headers.put("Content-Type","application/json");
+        headers.put("Accept","application/json, text/javascript, */*; q=0.01");
+        headers.put("Accept-Encoding","gzip, deflate");
+        headers.put("Accept-Language","zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
+        headers.put("Host","www.cwl.gov.cn");
+        headers.put("Referer","http://www.cwl.gov.cn/kjxx/ssq/kjgg/");
+        try {
+            BetHistoryDTO betHistoryDTO = HttpClient.doGet(tcbHistoryFetchUrl,headers,params,betHistoryResponseHandler);
+            if(betHistoryDTO != null && CollectionUtils.isNotEmpty(betHistoryDTO.getBets())){
+                Bet latestBet = getLastBet();
+                int maxCode = latestBet.getCode();
+                int firstId = generateIndex();
+                for(Bet bet : betHistoryDTO.getBets()){
+                    if(bet.getCode() <= maxCode){
+                        log.info("code to old.ignore and break.");
+                        break;
+                    }
+                    bet.setIndex(firstId ++);
+                    addHistory(bet);
+                }
+            }
+        } catch (Exception e) {
+            log.error("fetch tcb bet history error.");
+        }
     }
 
     /**

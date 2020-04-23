@@ -313,5 +313,13 @@ public class TcbHistoryManage {
         return tcbHistoryDAO.addHistory(bet);
     }
 
+    /**
+     * 从官网获取中奖历史并合并到系统中
+     */
+    public void mergeTcbBetHistoryFromOfficial(){
+        tcbHistoryDAO.fetchFromOfficial();
+        // 重新加载
+        loadHistory();
+    }
 
 }

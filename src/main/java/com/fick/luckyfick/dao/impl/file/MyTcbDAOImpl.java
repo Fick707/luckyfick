@@ -55,7 +55,9 @@ public class MyTcbDAOImpl implements MyTcbDAO {
 
     @Override
     public Integer addMyBet(MyBet bet) {
-        bet.setIndex(generateIndex());
+        if(bet.getIndex() == null) {
+            bet.setIndex(generateIndex());
+        }
         CommonFileWriter fileWriter = new CommonFileWriter(myTcbFileName);
         fileWriter.append(String.format("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
                 bet.getIndex(),

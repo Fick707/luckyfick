@@ -1,7 +1,6 @@
 package com.fick.luckyfick.service.impl;
 
 import com.fick.luckyfick.biz.TcbHistoryManage;
-import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.service.TcbBetHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class TcbBetHistoryServiceImpl implements TcbBetHistoryService {
     TcbHistoryManage tcbHistoryManage;
 
     @Override
-    public Integer addBetHistory(Bet bet) {
-        return tcbHistoryManage.addBetHistory(bet);
+    public void mergeTcbBetHistoryFromOfficial() {
+        tcbHistoryManage.mergeTcbBetHistoryFromOfficial();
     }
 }
