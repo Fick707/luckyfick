@@ -94,7 +94,7 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
         log.info("fetch tcb bet history from official.");
         Map<String,String> params = new HashMap<>(2);
         params.put("name","ssq");
-        params.put("issueCount","50");
+        params.put("issueCount","20");
         Map<String,String> headers = new HashMap<>(6);
         headers.put("Content-Type","application/json");
         headers.put("Accept","application/json, text/javascript, */*; q=0.01");
