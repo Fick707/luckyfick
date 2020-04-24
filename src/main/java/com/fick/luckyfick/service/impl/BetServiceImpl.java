@@ -17,6 +17,7 @@ import com.fick.luckyfick.tcb.strategy.impl.red.init.RedBallPreStrategyInitPool;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByAppearLastN;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByContinuousAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyIncludeByAbsence;
+import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyIncludeByAppearLastN;
 import com.fick.luckyfick.utils.BetUtils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -129,12 +130,12 @@ public class BetServiceImpl implements BetService {
                 .add(new RedBallPreStrategyInitPool(2000,100))
                 // 近100次出现次数>=30,则直接排除
                 .add(new RedBallPreStrategyExcludeByAppearLastN(100,30))
-                // 近100将出现次数<=9,则直接添加
-                .add(new RedBallPreStrategyIncludeByAbsence(9))
                 // 最近连接出现次数 >= 6,则直接排除
                 .add(new RedBallPreStrategyExcludeByContinuousAppeared(6))
                 // 最近连接缺失22次，直接选
                 .add(new RedBallPreStrategyIncludeByAbsence(22))
+                // 近100将出现次数<=9,则直接添加
+                .add(new RedBallPreStrategyIncludeByAppearLastN(100,9))
                 // 如果与历史二等奖重复，直接放弃
                 .add(new RedBallAfterStrategyExcludeBySecondPrizeAppeared())
 
@@ -144,6 +145,8 @@ public class BetServiceImpl implements BetService {
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
                 // 最近连接出现次数 >= 4,则直接排除
                 .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+                // 最近100次出现次数 < 3 则直接选
+                .add(new BlueBallPreStrategyExcludeByAppearLastN(100,3))
                 // 最近连接缺失60次，直接选
                 .add(new BlueBallPreStrategyIncludeByAbsence(60))
                 // 如果与历史一等奖重复，直接放弃

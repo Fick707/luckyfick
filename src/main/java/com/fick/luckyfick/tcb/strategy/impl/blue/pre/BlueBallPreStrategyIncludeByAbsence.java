@@ -26,7 +26,7 @@ public class BlueBallPreStrategyIncludeByAbsence extends BaseStrategy implements
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 16 ; ballNumber ++ ){
             int absenceCount = historyAnalysisService.getBlueBallMissCountInLast(ballNumber);
-            if(absenceCount > threshold){
+            if(absenceCount > threshold && !context.getBlueBallIncluded().contains(ballNumber) && !context.getBlueBallExcluded().contains(ballNumber)){
                 context.getBlueBallIncluded().add(ballNumber);
                 break;
             }
