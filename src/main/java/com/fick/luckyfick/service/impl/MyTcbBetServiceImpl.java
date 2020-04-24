@@ -123,9 +123,10 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         sb.append(myBet.getRed6());
         sb.append(":");
         sb.append(myBet.getBlue1());
-        sb.append("-");
-        sb.append(myBet.getMultiple());
-        sb.append("倍;");
+        sb.append(";");
+//        sb.append("-");
+//        sb.append(myBet.getMultiple());
+//        sb.append("倍;");
         return sb.toString();
     }
 
@@ -158,15 +159,13 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
     private String getLuckyNotificationMsg(MyBet bet,Bet luckyBet,PrizeType prizeType){
         StringBuilder sb = new StringBuilder("");
         sb.append("开奖:");
-        sb.append(bet.getResult());
-        sb.append(".");
+        sb.append(luckyBet.getResult());
         sb.append("我的:");
         sb.append(bet.getResult());
-        sb.append(".");
         sb.append("中奖:");
         sb.append(prizeType.getName());
-        sb.append("金额约:");
-        sb.append(prizeType.getAmount() * bet.getMultiple());
+//        sb.append("金额约:");
+//        sb.append(prizeType.getAmount() * bet.getMultiple());
         return sb.toString();
     }
 }
