@@ -185,7 +185,7 @@ public class BetServiceImpl implements BetService {
                 .add(new BlueBallAfterStrategyExcludeByFirstPrizeAppeared())
                 .build();
         MyBet doubleLucky = getOneLuckyBet(strategies);
-        doubleLucky.setMultiple(2);
+        doubleLucky.setMultiple(1);
         return doubleLucky;
     }
 
