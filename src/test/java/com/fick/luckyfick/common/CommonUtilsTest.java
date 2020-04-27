@@ -1,5 +1,6 @@
 package com.fick.luckyfick.common;
 
+import com.fick.common.utils.file.CommonFileWriter;
 import com.fick.luckyfick.BaseTest;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -32,6 +33,12 @@ public class CommonUtilsTest extends BaseTest {
         Calendar c = Calendar.getInstance();
         System.out.println(c.get(Calendar.DAY_OF_WEEK));
         System.out.println(c.get(Calendar.YEAR) * 1000 + 1);
+    }
+
+    @Test
+    public void testWriteFile(){
+        CommonFileWriter fileWriter = new CommonFileWriter("C:/Users/fick7/Desktop/test.log");
+        fileWriter.append("test2\n");
     }
 
 }
