@@ -24,4 +24,10 @@ public interface MyTcbDAO {
      * @return index
      */
     Integer addMyBet(MyBet bet);
+
+    /**
+     *
+     * @return
+     */
+    Integer getMyLastBetCode();
 }

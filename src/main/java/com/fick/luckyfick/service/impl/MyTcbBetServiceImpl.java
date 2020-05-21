@@ -156,16 +156,26 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         }
     }
 
+    @Override
+    public List<MyBet> getMyLatestBet() {
+        return myTcbManage.getMyLatestBet();
+    }
+
+    @Override
+    public List<MyBet> getMyBet(Integer code) {
+        return myTcbManage.getByCode(code);
+    }
+
     private String getLuckyNotificationMsg(MyBet bet,Bet luckyBet,PrizeType prizeType){
         StringBuilder sb = new StringBuilder("");
-        sb.append("开奖:");
+        sb.append("开:");
         sb.append(luckyBet.getResult());
         sb.append("我的:");
         sb.append(bet.getResult());
-        sb.append("中奖:");
+        sb.append("中:");
         sb.append(prizeType.getName());
-//        sb.append("金额约:");
-//        sb.append(prizeType.getAmount() * bet.getMultiple());
+        sb.append("约:");
+        sb.append(prizeType.getAmount() * bet.getMultiple());
         return sb.toString();
     }
 }

@@ -2,6 +2,8 @@ package com.fick.luckyfick.service;
 
 import com.fick.luckyfick.model.MyBet;
 
+import java.util.List;
+
 /**
  * @program: luckyfick
  * @description:
@@ -26,4 +28,17 @@ public interface MyTcbBetService {
      * 检查最新一期的投注是否中奖
      */
     void checkResult();
+
+    /**
+     * 获取我最后一次投注
+     * @return
+     */
+    List<MyBet> getMyLatestBet();
+
+    /**
+     * 获取我在指定期的投注
+     * @param code
+     * @return
+     */
+    List<MyBet> getMyBet(Integer code);
 }

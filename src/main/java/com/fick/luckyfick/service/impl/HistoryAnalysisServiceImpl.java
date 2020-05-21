@@ -38,6 +38,16 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
+    public List<Bet> getLastBetHistory(int last) {
+        return historyManage.getLastBets(last);
+    }
+
+    @Override
+    public Integer getLatestCode() {
+        return historyManage.getLatestCode();
+    }
+
+    @Override
     public List<Integer> getTopRed() {
         List<Bet> betList = historyManage.getBetHistory();
         List<BallCount> ballCounts = generateTopRed(betList);

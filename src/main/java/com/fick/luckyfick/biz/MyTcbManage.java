@@ -62,6 +62,14 @@ public class MyTcbManage {
         return index;
     }
 
+    public List<MyBet> getMyLatestBet(){
+        return getByCode(getMyLatestBetCode());
+    }
+
+    public Integer getMyLatestBetCode(){
+        return myTcbDAO.getMyLastBetCode();
+    }
+
     /**
      * 根据期号，获取我的投注列表
      * @param code

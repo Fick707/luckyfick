@@ -75,6 +75,11 @@ public class MyTcbDAOImpl implements MyTcbDAO {
         return bet.getIndex();
     }
 
+    @Override
+    public Integer getMyLastBetCode() {
+        return getLastBet().getCode();
+    }
+
 
     /**
      * 从历史记录中获取最后一条，用于id自增

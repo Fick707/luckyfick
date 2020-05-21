@@ -22,6 +22,18 @@ public interface HistoryAnalysisService {
     List<Bet> getBetHistory();
 
     /**
+     * 获取最近last次的开奖记录
+     * @param last
+     * @return
+     */
+    List<Bet> getLastBetHistory(int last);
+
+    /**
+     * 获取最新一期的期号
+     * @return
+     */
+    Integer getLatestCode();
+    /**
      * 根据历史所有开奖结果，按出现次数排序红球
      * @return
      */
