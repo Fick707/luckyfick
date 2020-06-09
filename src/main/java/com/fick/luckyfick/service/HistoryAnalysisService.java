@@ -22,6 +22,13 @@ public interface HistoryAnalysisService {
     List<Bet> getBetHistory();
 
     /**
+     * 根据期号获取
+     * @param code
+     * @return
+     */
+    Bet getLuckyBetByCode(Integer code);
+
+    /**
      * 获取最近last次的开奖记录
      * @param last
      * @return

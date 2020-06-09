@@ -12,6 +12,7 @@ import com.fick.luckyfick.tcb.strategy.impl.blue.init.BlueBallPreStrategyInitPoo
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByAppearLastN;
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyExcludeByContinuousAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyIncludeByAbsence;
+import com.fick.luckyfick.tcb.strategy.impl.blue.pre.BlueBallPreStrategyIncludeByAppearLastN;
 import com.fick.luckyfick.tcb.strategy.impl.red.after.RedBallAfterStrategyExcludeBySecondPrizeAppeared;
 import com.fick.luckyfick.tcb.strategy.impl.red.init.RedBallPreStrategyInitPool;
 import com.fick.luckyfick.tcb.strategy.impl.red.pre.RedBallPreStrategyExcludeByAppearLastN;
@@ -146,7 +147,7 @@ public class BetServiceImpl implements BetService {
                 // 最近连接出现次数 >= 4,则直接排除
                 .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
                 // 最近100次出现次数 < 3 则直接选
-                .add(new BlueBallPreStrategyExcludeByAppearLastN(100,3))
+                .add(new BlueBallPreStrategyIncludeByAppearLastN(100,3))
                 // 最近连接缺失60次，直接选
                 .add(new BlueBallPreStrategyIncludeByAbsence(60))
                 // 如果与历史一等奖重复，直接放弃

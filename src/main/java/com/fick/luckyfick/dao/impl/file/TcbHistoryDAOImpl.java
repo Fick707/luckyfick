@@ -103,7 +103,7 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
         headers.put("Host","www.cwl.gov.cn");
         headers.put("Referer","http://www.cwl.gov.cn/kjxx/ssq/kjgg/");
         try {
-            BetHistoryDTO betHistoryDTO = HttpClient.doGet(tcbHistoryFetchUrl,headers,params,betHistoryResponseHandler);
+            BetHistoryDTO betHistoryDTO = HttpClient.doGet(tcbHistoryFetchUrl,headers,params,betHistoryResponseHandler,null);
             if(betHistoryDTO != null && CollectionUtils.isNotEmpty(betHistoryDTO.getBets())){
                 Bet latestBet = getLastBet();
                 int maxCode = latestBet.getCode();

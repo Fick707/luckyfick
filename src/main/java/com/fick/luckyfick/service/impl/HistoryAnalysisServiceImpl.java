@@ -38,6 +38,11 @@ public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
     }
 
     @Override
+    public Bet getLuckyBetByCode(Integer code) {
+        return historyManage.getLuckyBetByCode(code);
+    }
+
+    @Override
     public List<Bet> getLastBetHistory(int last) {
         return historyManage.getLastBets(last);
     }
