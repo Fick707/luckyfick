@@ -128,7 +128,7 @@ public class BetServiceImpl implements BetService {
         List<TcbStrategy> strategies = new TcbStrategyBuilder()
                 // red strategies
                 // 根据近100次，随机池2000
-                .add(new RedBallPreStrategyInitPool(2000,100))
+                .add(new RedBallPreStrategyInitPool(1000,100))
                 // 近100次出现次数>=30,则直接排除
                 .add(new RedBallPreStrategyExcludeByAppearLastN(100,30))
                 // 最近连接出现次数 >= 6,则直接排除
@@ -141,7 +141,7 @@ public class BetServiceImpl implements BetService {
                 .add(new RedBallAfterStrategyExcludeBySecondPrizeAppeared())
 
                 // blue strategies
-                .add(new BlueBallPreStrategyInitPool(1000,100))
+                .add(new BlueBallPreStrategyInitPool(500,100))
                 // 近100期出现次数>=15,则直接排除
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
                 // 最近连接出现次数 >= 4,则直接排除
@@ -164,7 +164,7 @@ public class BetServiceImpl implements BetService {
         List<TcbStrategy> strategies = new TcbStrategyBuilder()
                 // red strategies
                 // 根据近100次，随机池3000
-                .add(new RedBallPreStrategyInitPool(3000,100))
+                .add(new RedBallPreStrategyInitPool(2000,100))
                 // 近100次出现次数>=60,则直接排除
                 .add(new RedBallPreStrategyExcludeByAppearLastN(100,50))
                 // 最近连接出现次数 >= 7,则直接排除
@@ -175,7 +175,7 @@ public class BetServiceImpl implements BetService {
                 .add(new RedBallAfterStrategyExcludeBySecondPrizeAppeared())
 
                 // blue strategies
-                .add(new BlueBallPreStrategyInitPool(2000,100))
+                .add(new BlueBallPreStrategyInitPool(1000,100))
                 // 近100期出现次数>=15,则直接排除
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
                 // 最近连接出现次数 >= 4,则直接排除
@@ -196,14 +196,14 @@ public class BetServiceImpl implements BetService {
         List<TcbStrategy> strategies = new TcbStrategyBuilder()
                 // red strategies
                 // 根据近100次，随机池5000
-                .add(new RedBallPreStrategyInitPool(5000,100))
+                .add(new RedBallPreStrategyInitPool(3000,100))
                 // 近100次出现次数>=50,则直接排除
                 .add(new RedBallPreStrategyExcludeByAppearLastN(100,50))
                 // 最近连接出现次数 >= 7,则直接排除
                 .add(new RedBallPreStrategyExcludeByContinuousAppeared(7))
 
                 // blue strategies
-                .add(new BlueBallPreStrategyInitPool(2000,100))
+                .add(new BlueBallPreStrategyInitPool(1000,100))
                 // 近100期出现次数>=35,则直接排除
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,30))
                 // 最近连接出现次数 >= 4,则直接排除

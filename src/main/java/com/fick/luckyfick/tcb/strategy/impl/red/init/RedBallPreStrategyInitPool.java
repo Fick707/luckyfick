@@ -41,7 +41,7 @@ public class RedBallPreStrategyInitPool extends BaseStrategy implements RedBallI
 
     @Override
     public void bingo(TcbStrategyContext context) {
-        // 初始化蓝球选池
+        // 初始化红球选池
         context.setRedBallPool(new ArrayList<>(poolCapacity));
         for(int i = 0 ; i < poolCapacity ; i ++ ){
             context.getRedBallPool().add(i,(i % 33) + 1);
@@ -58,7 +58,7 @@ public class RedBallPreStrategyInitPool extends BaseStrategy implements RedBallI
             }
             int[] indexes = new int[count];
             int filledIndex = 0;
-            for(int index = 0 ; index < poolCapacity ; index ++){
+            for(int index = 0 ; index < context.getRedBallPool().size() ; index ++){
                 if(context.getRedBallPool().get(index) == i){
                     indexes[filledIndex ++] = index;
                 }
@@ -66,8 +66,15 @@ public class RedBallPreStrategyInitPool extends BaseStrategy implements RedBallI
                     break;
                 }
             }
-            for( int index : indexes){
-                context.getRedBallPool().remove(index);
+            for( int ri = count ; ri >0 ; ri -- ){
+                context.getRedBallPool().remove(indexes[ri - 1]);
+            }
+        }
+        // 将历史中连续缺失次数加进来
+        for(int i = 1 ; i <= 33 ; i ++) {
+            int missCount = historyAnalysisService.getRedBallMissCountInLast(i);
+            for(int j = 0 ; j < missCount ; j ++){
+                context.getRedBallPool().add(i);
             }
         }
     }

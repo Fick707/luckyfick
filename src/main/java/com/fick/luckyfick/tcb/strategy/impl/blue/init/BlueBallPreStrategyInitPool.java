@@ -56,7 +56,7 @@ public class BlueBallPreStrategyInitPool extends BaseStrategy implements BlueBal
             }
             int[] indexes = new int[count];
             int filledIndex = 0;
-            for(int index = 0 ; index < poolCapacity ; index ++){
+            for(int index = 0 ; index < context.getBlueBallPool().size() ; index ++){
                 if(context.getBlueBallPool().get(index) == i){
                     indexes[filledIndex ++] = index;
                 }
@@ -64,8 +64,15 @@ public class BlueBallPreStrategyInitPool extends BaseStrategy implements BlueBal
                     break;
                 }
             }
-            for( int index : indexes){
-                context.getBlueBallPool().remove(index);
+            for( int ri = count ; ri >0 ; ri -- ){
+                context.getBlueBallPool().remove(indexes[ri - 1]);
+            }
+        }
+        // 将历史中连续缺失次数加进来
+        for(int i = 1 ; i <= 16 ; i ++) {
+            int missCount = historyAnalysisService.getBlueBallMissCountInLast(i);
+            for(int j = 0 ; j < missCount ; j ++){
+                context.getBlueBallPool().add(i);
             }
         }
     }

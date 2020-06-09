@@ -51,7 +51,7 @@ public class TcbBetHistoryServiceImplTest extends BaseTest {
             if(testCount % 10000 == 0){
                 log.warn("test count:{},cost {} s.",testCount,(System.currentTimeMillis() - bt) / 1000);
             }
-            myBet = betService.lucky();
+            myBet = betService.tripleLucky();
             prizeType = BetUtils.getPrizeType(bet,myBet);
         }
         log.warn(String.format("bing go,%s,%d,testCount:%d",prizeType.getName(),prizeType.getAmount(),testCount));
