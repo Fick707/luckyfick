@@ -102,7 +102,7 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
             }
             todayBetHistory.add(tripleLucky);
             long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0){
+            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
                 break;
             }
         }
@@ -122,7 +122,7 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
             }
             todayBetHistory.add(doubleLucky);
             long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0){
+            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
                 break;
             }
         }
@@ -142,7 +142,7 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
             }
             todayBetHistory.add(lucky);
             long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0){
+            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
                 break;
             }
         }

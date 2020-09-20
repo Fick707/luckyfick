@@ -22,11 +22,19 @@ public abstract class BaseStrategy implements TcbStrategy {
      */
     protected HistoryAnalysisService historyAnalysisService;
 
+
     protected MyTcbBetService myTcbBetService;
 
     @Override
-    public void setHistoryAnalysisService(HistoryAnalysisService historyAnalysisService){
+    public TcbStrategy setHistoryAnalysisService(HistoryAnalysisService historyAnalysisService){
         this.historyAnalysisService = historyAnalysisService;
+        return this;
+    }
+
+    @Override
+    public TcbStrategy setMyTcbBetService(MyTcbBetService myTcbBetService){
+        this.myTcbBetService = myTcbBetService;
+        return this;
     }
 
     /**

@@ -24,4 +24,9 @@ public class MyTcbBetServiceImplTest extends BaseTest {
         myBet.setDate(System.currentTimeMillis());
         myTcbBetService.addMyBet(myBet);
     }
+
+    @Test
+    public void testGenerate(){
+        myTcbBetService.generateMyBet();
+    }
 }

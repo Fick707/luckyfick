@@ -1,6 +1,7 @@
 package com.fick.luckyfick.tcb.strategy;
 
 import com.fick.luckyfick.service.HistoryAnalysisService;
+import com.fick.luckyfick.service.MyTcbBetService;
 
 /**
  * @name: TcbStrategy
@@ -21,5 +22,11 @@ public interface TcbStrategy {
      * 设置历史分析服务
      * @param historyAnalysisService
      */
-    void setHistoryAnalysisService(HistoryAnalysisService historyAnalysisService);
+    TcbStrategy setHistoryAnalysisService(HistoryAnalysisService historyAnalysisService);
+
+    /**
+     * 设置我的投注服务
+     * @param myTcbBetService
+     */
+    TcbStrategy setMyTcbBetService(MyTcbBetService myTcbBetService);
 }

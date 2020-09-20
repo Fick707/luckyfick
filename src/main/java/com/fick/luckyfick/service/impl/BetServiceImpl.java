@@ -5,6 +5,7 @@ import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.service.BetService;
 import com.fick.luckyfick.service.HistoryAnalysisService;
+import com.fick.luckyfick.service.MyTcbBetService;
 import com.fick.luckyfick.tcb.strategy.*;
 import com.fick.luckyfick.tcb.strategy.impl.TcbStrategyBuilder;
 import com.fick.luckyfick.tcb.strategy.impl.blue.after.BlueBallAfterStrategyExcludeByFirstPrizeAppeared;
@@ -45,6 +46,9 @@ public class BetServiceImpl implements BetService {
     @Autowired
     HistoryAnalysisService historyAnalysisService;
 
+    @Autowired
+    MyTcbBetService myTcbBetService;
+
     @Override
     public boolean isRedBallIn(Bet bet, Integer ballNumber) {
         return BetUtils.isRedBallIn(bet,ballNumber);
@@ -66,7 +70,7 @@ public class BetServiceImpl implements BetService {
             strategies = new ArrayList<>();
         }
         if(CollectionUtils.isNotEmpty(strategies)){
-            strategies.stream().forEach(item -> item.setHistoryAnalysisService(historyAnalysisService));
+            strategies.stream().forEach(item -> item.setHistoryAnalysisService(historyAnalysisService).setMyTcbBetService(myTcbBetService));
         }
         // 过滤出红球初始化策略
         List<RedBallInitStrategy> redBallInitStrategies = strategies
