@@ -4,6 +4,7 @@ import com.fick.luckyfick.model.Bet;
 import com.fick.luckyfick.model.MyBet;
 import com.fick.luckyfick.model.PrizeType;
 import com.fick.luckyfick.service.HistoryAnalysisService;
+import com.fick.luckyfick.service.MyTcbBetService;
 import com.fick.luckyfick.tcb.strategy.TcbStrategy;
 import com.fick.luckyfick.utils.BetUtils;
 
@@ -21,13 +22,15 @@ public abstract class BaseStrategy implements TcbStrategy {
      */
     protected HistoryAnalysisService historyAnalysisService;
 
+    protected MyTcbBetService myTcbBetService;
+
     @Override
     public void setHistoryAnalysisService(HistoryAnalysisService historyAnalysisService){
         this.historyAnalysisService = historyAnalysisService;
     }
 
     /**
-     * 是否与历史一等奖相同
+     * 是否与历史一等奖相同，包含中奖历史、我自己的投注历史
      */
     protected boolean isSameFirstPrizeAppeared(Bet bet){
         for(Bet luckyBet : historyAnalysisService.getBetHistory()){
@@ -36,11 +39,17 @@ public abstract class BaseStrategy implements TcbStrategy {
                 return true;
             }
         }
+        for(MyBet myBet : myTcbBetService.getMyBetHistoryAll()){
+            PrizeType prizeType = BetUtils.getPrizeType(bet,myBet);
+            if( prizeType.ordinal() == PrizeType.First.ordinal() ){
+                return true;
+            }
+        }
         return false;
     }
 
     /**
-     * 是否与历史一等奖相同
+     * 是否与历史一等奖相同，包含中奖历史、我自己的投注历史
      */
     protected boolean isSameFirstPrizeAppeared(MyBet bet){
         for(Bet luckyBet : historyAnalysisService.getBetHistory()){
@@ -49,10 +58,16 @@ public abstract class BaseStrategy implements TcbStrategy {
                 return true;
             }
         }
+        for(MyBet myBet : myTcbBetService.getMyBetHistoryAll()){
+            PrizeType prizeType = BetUtils.getPrizeType(bet,myBet);
+            if( prizeType.ordinal() == PrizeType.First.ordinal() ){
+                return true;
+            }
+        }
         return false;
     }
     /**
-     * 是否与历史二等奖相同
+     * 是否与历史二等奖相同，包含中奖历史、我自己的投注历史
      */
     protected boolean isSameSecondPrizeAppeared(Bet bet){
         for(Bet luckyBet : historyAnalysisService.getBetHistory()){
@@ -61,14 +76,26 @@ public abstract class BaseStrategy implements TcbStrategy {
                 return true;
             }
         }
+        for(MyBet myBet : myTcbBetService.getMyBetHistoryAll()){
+            PrizeType prizeType = BetUtils.getPrizeType(bet,myBet);
+            if( prizeType.ordinal() == PrizeType.Second.ordinal() ){
+                return true;
+            }
+        }
         return false;
     }
     /**
-     * 是否与历史二等奖相同
+     * 是否与历史二等奖相同，包含中奖历史、我自己的投注历史
      */
     protected boolean isSameSecondPrizeAppeared(MyBet bet){
         for(Bet luckyBet : historyAnalysisService.getBetHistory()){
             PrizeType prizeType = BetUtils.getPrizeType(luckyBet,bet);
+            if( prizeType.ordinal() == PrizeType.Second.ordinal() ){
+                return true;
+            }
+        }
+        for(MyBet myBet : myTcbBetService.getMyBetHistoryAll()){
+            PrizeType prizeType = BetUtils.getPrizeType(bet,myBet);
             if( prizeType.ordinal() == PrizeType.Second.ordinal() ){
                 return true;
             }

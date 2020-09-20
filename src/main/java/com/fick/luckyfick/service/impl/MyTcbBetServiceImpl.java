@@ -19,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * @program: luckyfick
@@ -51,6 +49,17 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
     @Autowired
     SmsService smsService;
 
+    /**
+     * 今日投注历史
+     */
+    List<MyBet> todayBetHistory = new ArrayList<>();
+
+    boolean isTripleLucky = false;
+
+    boolean isDoubleLucky = false;
+
+    boolean isLucky = false;
+
     @Override
     public Integer addMyBet(MyBet myBet) {
         return myTcbManage.addMyBet(myBet);
@@ -58,6 +67,12 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
 
     @Override
     public void generateMyBet() {
+        long gbt = System.currentTimeMillis();
+        // 每天清空
+        todayBetHistory = new ArrayList<>();
+        isTripleLucky = false;
+        isDoubleLucky = false;
+        isLucky = false;
         Integer maxCode = tcbHistoryManage.getLatestCode();
         Integer codeToBet = null;
         Calendar c = Calendar.getInstance();
@@ -75,20 +90,62 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         } else {
             codeToBet = maxCode + 1;
         }
+        Random random = new Random();
         // 1. 先生成一个3倍的
-        MyBet tripleLucky = betService.tripleLucky();
+        int testNumber = random.nextInt(50000);
+        MyBet tripleLucky = null;
+        for(int i = 0 ; i < testNumber ; i ++) {
+            long bt = System.currentTimeMillis();
+            tripleLucky = betService.tripleLucky();
+            if(BetUtils.isIn(tripleLucky,todayBetHistory)){
+                continue;
+            }
+            todayBetHistory.add(tripleLucky);
+            long et = System.currentTimeMillis();
+            if((bt - et ) % 8 == 0){
+                break;
+            }
+        }
         tripleLucky.setCode(codeToBet);
         tripleLucky.setDate(System.currentTimeMillis());
         log.info("generated triple lucky bet {}.", JSON.toJSONString(tripleLucky));
         myTcbManage.addMyBet(tripleLucky);
+
         // 2. 再生成一个1倍的
-        MyBet doubleLucky = betService.doubleLucky();
+        testNumber = random.nextInt(50000);
+        MyBet doubleLucky = null;
+        for(int i = 0 ; i < testNumber ; i ++) {
+            long bt = System.currentTimeMillis();
+            doubleLucky = betService.doubleLucky();
+            if(BetUtils.isIn(doubleLucky,todayBetHistory)){
+                continue;
+            }
+            todayBetHistory.add(doubleLucky);
+            long et = System.currentTimeMillis();
+            if((bt - et ) % 8 == 0){
+                break;
+            }
+        }
         doubleLucky.setCode(codeToBet);
         doubleLucky.setDate(System.currentTimeMillis());
         log.info("generated double lucky bet {}.", JSON.toJSONString(doubleLucky));
         myTcbManage.addMyBet(doubleLucky);
+
         // 3. 再生成一个1倍的
-        MyBet lucky = betService.lucky();
+        testNumber = random.nextInt(50000);
+        MyBet lucky = null;
+        for(int i = 0 ; i < testNumber ; i ++) {
+            long bt = System.currentTimeMillis();
+            lucky = betService.lucky();
+            if(BetUtils.isIn(lucky,todayBetHistory)){
+                continue;
+            }
+            todayBetHistory.add(lucky);
+            long et = System.currentTimeMillis();
+            if((bt - et ) % 8 == 0){
+                break;
+            }
+        }
         lucky.setCode(codeToBet);
         lucky.setDate(System.currentTimeMillis());
         log.info("generated lucky bet {}.", JSON.toJSONString(lucky));
@@ -101,6 +158,8 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
             smsSendParam.setPhoneNumbers(Arrays.asList(betNotificationNumbers.split(",")));
             smsService.sendSms(smsSendParam);
         }
+        todayBetHistory = null;
+        log.info("generate lucky bets total cost {} ms.",System.currentTimeMillis() - gbt);
     }
 
     /**
@@ -164,6 +223,11 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
     @Override
     public List<MyBet> getMyBet(Integer code) {
         return myTcbManage.getByCode(code);
+    }
+
+    @Override
+    public List<MyBet> getMyBetHistoryAll() {
+        return myTcbManage.getMyBetHistory();
     }
 
     private String getLuckyNotificationMsg(MyBet bet,Bet luckyBet,PrizeType prizeType){

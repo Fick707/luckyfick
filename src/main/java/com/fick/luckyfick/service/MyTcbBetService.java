@@ -41,4 +41,10 @@ public interface MyTcbBetService {
      * @return
      */
     List<MyBet> getMyBet(Integer code);
+
+    /**
+     * 获取我所有历史
+     * @return
+     */
+    List<MyBet> getMyBetHistoryAll();
 }
