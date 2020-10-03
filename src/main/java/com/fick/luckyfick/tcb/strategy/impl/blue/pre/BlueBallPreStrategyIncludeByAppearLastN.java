@@ -39,7 +39,7 @@ public class BlueBallPreStrategyIncludeByAppearLastN extends BaseStrategy implem
         for(int ballNumber = 1 ; ballNumber <= 16 ; ballNumber ++ ){
             int count = historyAnalysisService.getBlueBallCountInLast(lastN,ballNumber);
             if(count < threshold && !context.getBlueBallIncluded().contains(ballNumber) && !context.getBlueBallExcluded().contains(ballNumber)){
-                context.getBlueBallExcluded().add(ballNumber);
+                context.getBlueBallIncluded().add(ballNumber);
             }
         }
     }

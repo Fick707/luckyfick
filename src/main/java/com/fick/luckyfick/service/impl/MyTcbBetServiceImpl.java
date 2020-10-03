@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @program: luckyfick
@@ -65,6 +66,73 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         return myTcbManage.addMyBet(myBet);
     }
 
+    private MyBet getTempBet(int type){
+        Random random = new Random();
+        int testNumber = random.nextInt(50000);
+        MyBet tempLucky = null;
+        for(int i = 0 ; i < testNumber ; i ++) {
+            long bt = System.currentTimeMillis();
+            switch (type){
+                case 3: tempLucky = betService.tripleLucky();
+                break;
+                case 2: tempLucky = betService.doubleLucky();
+                break;
+                case 1:
+                default: tempLucky = betService.lucky();
+                break;
+            }
+            if(BetUtils.isIn(tempLucky,todayBetHistory)){
+                continue;
+            }
+            todayBetHistory.add(tempLucky);
+            long et = System.currentTimeMillis();
+            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
+                break;
+            }
+        }
+        return tempLucky;
+    }
+
+    private MyBet getFinalTempBet(int type){
+        Random random = new Random();
+        int num = random.nextInt(100);
+        List<Integer> reds = new ArrayList<>();
+        List<Integer> blues = new ArrayList<>();
+        for(int i = 0 ; i < num ; i ++){
+            MyBet temp = getTempBet(type);
+            reds.add(temp.getRed1());
+            reds.add(temp.getRed2());
+            reds.add(temp.getRed3());
+            reds.add(temp.getRed4());
+            reds.add(temp.getRed5());
+            reds.add(temp.getRed6());
+            blues.add(temp.getBlue1());
+        }
+        MyBet retValue = new MyBet();
+        List<Integer> finalReds = new ArrayList<>(6);
+        for(int i = 0 ; i < 6 ; i ++){
+            Integer tempRed = getRandomOne(reds);
+            finalReds.add(tempRed);
+            reds = reds.stream().filter(item -> item.intValue() != tempRed).collect(Collectors.toList());
+        }
+        Collections.sort(finalReds);
+        retValue.setRed1(finalReds.get(0));
+        retValue.setRed2(finalReds.get(1));
+        retValue.setRed3(finalReds.get(2));
+        retValue.setRed4(finalReds.get(3));
+        retValue.setRed5(finalReds.get(4));
+        retValue.setRed6(finalReds.get(5));
+        retValue.setBlue1(getRandomOne(blues));
+        return retValue;
+    }
+
+    private Integer getRandomOne(List<Integer> pool){
+        Random random = new Random();
+        Integer t1 = pool.get(random.nextInt(pool.size()));
+        return t1;
+    }
+
+
     @Override
     public void generateMyBet() {
         long gbt = System.currentTimeMillis();
@@ -90,64 +158,27 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         } else {
             codeToBet = maxCode + 1;
         }
-        Random random = new Random();
-        // 1. 先生成一个3倍的
-        int testNumber = random.nextInt(50000);
-        MyBet tripleLucky = null;
-        for(int i = 0 ; i < testNumber ; i ++) {
-            long bt = System.currentTimeMillis();
-            tripleLucky = betService.tripleLucky();
-            if(BetUtils.isIn(tripleLucky,todayBetHistory)){
-                continue;
-            }
-            todayBetHistory.add(tripleLucky);
-            long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
-                break;
-            }
-        }
+
+        MyBet tripleLucky = getFinalTempBet(3);
         tripleLucky.setCode(codeToBet);
         tripleLucky.setDate(System.currentTimeMillis());
+        tripleLucky.setMultiple(3);
         log.info("generated triple lucky bet {}.", JSON.toJSONString(tripleLucky));
         myTcbManage.addMyBet(tripleLucky);
 
         // 2. 再生成一个1倍的
-        testNumber = random.nextInt(50000);
-        MyBet doubleLucky = null;
-        for(int i = 0 ; i < testNumber ; i ++) {
-            long bt = System.currentTimeMillis();
-            doubleLucky = betService.doubleLucky();
-            if(BetUtils.isIn(doubleLucky,todayBetHistory)){
-                continue;
-            }
-            todayBetHistory.add(doubleLucky);
-            long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
-                break;
-            }
-        }
+        MyBet doubleLucky = getFinalTempBet(2);
         doubleLucky.setCode(codeToBet);
         doubleLucky.setDate(System.currentTimeMillis());
+        doubleLucky.setMultiple(1);
         log.info("generated double lucky bet {}.", JSON.toJSONString(doubleLucky));
         myTcbManage.addMyBet(doubleLucky);
 
         // 3. 再生成一个1倍的
-        testNumber = random.nextInt(50000);
-        MyBet lucky = null;
-        for(int i = 0 ; i < testNumber ; i ++) {
-            long bt = System.currentTimeMillis();
-            lucky = betService.lucky();
-            if(BetUtils.isIn(lucky,todayBetHistory)){
-                continue;
-            }
-            todayBetHistory.add(lucky);
-            long et = System.currentTimeMillis();
-            if((bt - et ) % 8 == 0 && bt % 8 == 0 && et % 8 == 0){
-                break;
-            }
-        }
+        MyBet lucky = getFinalTempBet(1);
         lucky.setCode(codeToBet);
         lucky.setDate(System.currentTimeMillis());
+        lucky.setMultiple(1);
         log.info("generated lucky bet {}.", JSON.toJSONString(lucky));
         myTcbManage.addMyBet(lucky);
         // 通过短信发送

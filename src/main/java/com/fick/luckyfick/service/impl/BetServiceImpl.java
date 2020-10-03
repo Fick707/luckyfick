@@ -146,14 +146,15 @@ public class BetServiceImpl implements BetService {
 
                 // blue strategies
                 .add(new BlueBallPreStrategyInitPool(500,100))
+
                 // 近100期出现次数>=15,则直接排除
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
                 // 最近连接出现次数 >= 4,则直接排除
                 .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
-                // 最近100次出现次数 < 3 则直接选
-                .add(new BlueBallPreStrategyIncludeByAppearLastN(100,3))
                 // 最近连接缺失60次，直接选
                 .add(new BlueBallPreStrategyIncludeByAbsence(60))
+
+
                 // 如果与历史一等奖重复，直接放弃
                 .add(new BlueBallAfterStrategyExcludeByFirstPrizeAppeared())
                 .build();
@@ -184,6 +185,9 @@ public class BetServiceImpl implements BetService {
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,15))
                 // 最近连接出现次数 >= 4,则直接排除
                 .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+
+                // 最近100次出现次数 < 3 则直接选
+                .add(new BlueBallPreStrategyIncludeByAppearLastN(100,3))
                 // 最近连接缺失60次，直接选
                 .add(new BlueBallPreStrategyIncludeByAbsence(100))
                 // 如果与历史一等奖重复，直接放弃
@@ -212,6 +216,10 @@ public class BetServiceImpl implements BetService {
                 .add(new BlueBallPreStrategyExcludeByAppearLastN(100,30))
                 // 最近连接出现次数 >= 4,则直接排除
                 .add(new BlueBallPreStrategyExcludeByContinuousAppeared(4))
+
+                // 最近100次出现次数 < 3 则直接选
+                .add(new BlueBallPreStrategyIncludeByAppearLastN(100,1))
+
                 .build();
         MyBet lucky = getOneLuckyBet(strategies);
         lucky.setMultiple(1);
