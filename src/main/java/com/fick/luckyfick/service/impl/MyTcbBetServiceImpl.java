@@ -265,7 +265,7 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         StringBuilder sb = new StringBuilder("");
         sb.append("开:");
         sb.append(luckyBet.getResult());
-        sb.append("我的:");
+        sb.append("我:");
         sb.append(bet.getResult());
         sb.append("中:");
         sb.append(prizeType.getName());
