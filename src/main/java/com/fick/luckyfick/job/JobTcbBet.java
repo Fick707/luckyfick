@@ -18,11 +18,15 @@ import javax.annotation.Resource;
 public class JobTcbBet implements Job {
 
     @Resource
-    MyTcbBetService myTcbBetService;
+    private MyTcbBetService myTcbBetService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("do tcb bet job.");
-        myTcbBetService.generateMyBet();
+        try {
+            myTcbBetService.generateMyBet();
+        } catch (Exception e){
+            log.error("generate my bet job error.",e);
+        }
     }
 }

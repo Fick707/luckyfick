@@ -39,16 +39,16 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
     private String betLuckyNotificationNumbers;
 
     @Autowired
-    MyTcbManage myTcbManage;
+    private MyTcbManage myTcbManage;
 
     @Autowired
-    TcbHistoryManage tcbHistoryManage;
+    private TcbHistoryManage tcbHistoryManage;
 
     @Autowired
-    BetService betService;
+    private BetService betService;
 
     @Autowired
-    SmsService smsService;
+    private SmsService smsService;
 
     /**
      * 今日投注历史
@@ -66,6 +66,11 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         return myTcbManage.addMyBet(myBet);
     }
 
+    /**
+     * 获取临时投注，根据类型，即随机生成N（小于50000）个投注号码
+     * @param type
+     * @return
+     */
     private MyBet getTempBet(int type){
         Random random = new Random();
         int testNumber = random.nextInt(50000);
@@ -90,15 +95,23 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
                 break;
             }
         }
+        log.info("get temp bet result:{}",JSON.toJSONString(tempLucky));
         return tempLucky;
     }
 
+    /**
+     * 生成最后的临时投注，逻辑如下：
+     * 随机产生N(小于100）个投注，再从这100注里，随机拿6个红球，随机拿1个蓝球；
+     * @param type
+     * @return
+     */
     private MyBet getFinalTempBet(int type){
         Random random = new Random();
         int num = random.nextInt(100);
         List<Integer> reds = new ArrayList<>();
         List<Integer> blues = new ArrayList<>();
         for(int i = 0 ; i < num ; i ++){
+            // 随机生成一注
             MyBet temp = getTempBet(type);
             reds.add(temp.getRed1());
             reds.add(temp.getRed2());
@@ -110,11 +123,13 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         }
         MyBet retValue = new MyBet();
         List<Integer> finalReds = new ArrayList<>(6);
+        // 循环6次，每次随机拿一个号，并且从池子中，将这个号删除
         for(int i = 0 ; i < 6 ; i ++){
             Integer tempRed = getRandomOne(reds);
             finalReds.add(tempRed);
             reds = reds.stream().filter(item -> item.intValue() != tempRed).collect(Collectors.toList());
         }
+        // 红球排序
         Collections.sort(finalReds);
         retValue.setRed1(finalReds.get(0));
         retValue.setRed2(finalReds.get(1));

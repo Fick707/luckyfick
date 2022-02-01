@@ -53,7 +53,7 @@ public interface BetService {
     MyBet tripleLucky();
 
     /**
-     * 生成1倍注
+     * 生成2倍注
      * @return
      */
     MyBet doubleLucky();

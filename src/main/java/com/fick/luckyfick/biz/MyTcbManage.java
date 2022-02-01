@@ -23,7 +23,7 @@ import java.util.List;
 public class MyTcbManage {
 
     @Autowired
-    MyTcbDAO myTcbDAO;
+    private MyTcbDAO myTcbDAO;
 
     /**
      * 历史中奖记录

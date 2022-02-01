@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class TcbBetHistoryServiceImpl implements TcbBetHistoryService {
 
     @Autowired
-    TcbHistoryManage tcbHistoryManage;
+    private TcbHistoryManage tcbHistoryManage;
 
     @Override
     public void mergeTcbBetHistoryFromOfficial() {

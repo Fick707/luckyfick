@@ -18,11 +18,15 @@ import javax.annotation.Resource;
 public class JobTcbFetchHis implements Job {
 
     @Resource
-    TcbBetHistoryService tcbBetHistoryService;
+    private TcbBetHistoryService tcbBetHistoryService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("do tcb fetch his job.");
-        tcbBetHistoryService.mergeTcbBetHistoryFromOfficial();
+        try {
+            tcbBetHistoryService.mergeTcbBetHistoryFromOfficial();
+        } catch (Exception e){
+            log.error("merge tcb bet history from official job error.",e);
+        }
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
 public class TcbHistoryManage {
 
     @Autowired
-    TcbHistoryDAO tcbHistoryDAO;
+    private TcbHistoryDAO tcbHistoryDAO;
 
     /**
      * 历史中奖记录
@@ -104,6 +104,10 @@ public class TcbHistoryManage {
         return latest.getCode();
     }
 
+    /**
+     * 根据历史记录，获取最新一期的日期
+     * @return
+     */
     public Long getLatestDate(){
         Bet latest = betHistory.get(betHistory.size() -1);
         return latest.getDate();

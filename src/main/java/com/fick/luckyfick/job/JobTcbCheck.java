@@ -18,11 +18,15 @@ import javax.annotation.Resource;
 public class JobTcbCheck implements Job {
 
     @Resource
-    MyTcbBetService myTcbBetService;
+    private MyTcbBetService myTcbBetService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("do tcb check job.");
-        myTcbBetService.checkResult();
+        try {
+            myTcbBetService.checkResult();
+        } catch (Exception e){
+            log.error("check result job error.",e);
+        }
     }
 }

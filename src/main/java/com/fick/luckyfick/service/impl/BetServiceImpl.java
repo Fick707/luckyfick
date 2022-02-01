@@ -44,10 +44,10 @@ import java.util.stream.Collectors;
 public class BetServiceImpl implements BetService {
 
     @Autowired
-    HistoryAnalysisService historyAnalysisService;
+    private HistoryAnalysisService historyAnalysisService;
 
     @Autowired
-    MyTcbBetService myTcbBetService;
+    private MyTcbBetService myTcbBetService;
 
     @Override
     public boolean isRedBallIn(Bet bet, Integer ballNumber) {

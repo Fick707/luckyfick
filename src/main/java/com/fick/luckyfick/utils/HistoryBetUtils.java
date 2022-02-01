@@ -40,7 +40,11 @@ public class HistoryBetUtils {
                 "/his/201802.json",
                 "/his/201901.json",
                 "/his/201902.json",
-                "/his/202001.json"
+                "/his/202001.json",
+                "/his/202002.json",
+                "/his/202101.json",
+                "/his/202102.json",
+                "/his/202201.json"
                 );
 
         for(String fileName : fileNames){
@@ -120,6 +124,10 @@ public class HistoryBetUtils {
         return betList;
     }
 
+    /**
+     * 加载2003年-2012年的数据
+     * @return
+     */
     private static List<Bet> load0312(){
         List<Bet> betList = new ArrayList<>();
         CommonFileReader commonFileReader = new CommonFileReader("/his/03-12.log","",0,null);

@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 public class HistoryAnalysisServiceImpl implements HistoryAnalysisService {
 
     @Autowired
-    TcbHistoryManage historyManage;
+    private TcbHistoryManage historyManage;
 
     @Autowired
-    BetService betService;
+    private BetService betService;
 
     @Override
     public List<Bet> getBetHistory() {
