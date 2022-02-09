@@ -101,7 +101,7 @@ public class TcbHistoryDAOImpl implements TcbHistoryDAO {
         headers.put("Accept-Encoding","gzip, deflate");
         headers.put("Accept-Language","zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
         headers.put("Host","www.cwl.gov.cn");
-        headers.put("Referer","http://www.cwl.gov.cn/kjxx/ssq/kjgg/");
+        headers.put("Referer","http://www.cwl.gov.cn/ygkj/wqkjgg/ssq/");
         try {
             BetHistoryDTO betHistoryDTO = HttpClient.doGet(tcbHistoryFetchUrl,headers,params,betHistoryResponseHandler,null);
             if(betHistoryDTO != null && CollectionUtils.isNotEmpty(betHistoryDTO.getBets())){
