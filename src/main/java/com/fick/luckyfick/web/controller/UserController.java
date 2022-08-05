@@ -87,7 +87,7 @@ public class UserController {
      * @throws IOException
      */
     @RequestMapping(value = "/remoteIp",method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<UserDetailResult> remoteIp(HttpServletRequest request) throws IOException {
+    public WebResult<String> remoteIp(HttpServletRequest request) throws IOException {
         return WebResult.success(request.getRemoteHost());
     }
 
