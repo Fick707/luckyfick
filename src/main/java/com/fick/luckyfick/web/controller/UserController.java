@@ -80,4 +80,14 @@ public class UserController {
         return WebResult.success(new UserDetailResult());
     }
 
+    /**
+     * 登出
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/remoteIp",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<UserDetailResult> remoteIp(HttpServletRequest request) throws IOException {
+        return WebResult.success(request.getRemoteHost());
+    }
+
 }
