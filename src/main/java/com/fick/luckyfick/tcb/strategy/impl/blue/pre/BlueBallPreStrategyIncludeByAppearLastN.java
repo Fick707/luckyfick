@@ -3,6 +3,7 @@ package com.fick.luckyfick.tcb.strategy.impl.blue.pre;
 import com.fick.luckyfick.tcb.strategy.BlueBallPreStrategy;
 import com.fick.luckyfick.tcb.strategy.TcbStrategyContext;
 import com.fick.luckyfick.tcb.strategy.impl.BaseStrategy;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @name: BlueBallPreStrategyExcludeByAppearLastN
@@ -38,7 +39,17 @@ public class BlueBallPreStrategyIncludeByAppearLastN extends BaseStrategy implem
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 16 ; ballNumber ++ ){
             int count = historyAnalysisService.getBlueBallCountInLast(lastN,ballNumber);
-            if(count < threshold && !context.getBlueBallIncluded().contains(ballNumber) && !context.getBlueBallExcluded().contains(ballNumber)){
+            int minCount = 0;
+            if(CollectionUtils.isNotEmpty(context.getBlueBallExcluded())){
+                minCount = context.getBlueBallExcluded().stream().mapToInt(Integer::intValue).min().getAsInt();
+            }
+            if(count < threshold
+                    // 包含列表为空或者缺失次数小于当前最小
+                    && (CollectionUtils.isEmpty(context.getBlueBallIncluded()) || count < minCount)
+                    // 包含列表里还未包含
+                    && !context.getBlueBallIncluded().contains(ballNumber)
+                    // 排除列表里未包含
+                    && !context.getBlueBallExcluded().contains(ballNumber)){
                 context.getBlueBallIncluded().add(ballNumber);
             }
         }

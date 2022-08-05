@@ -2,12 +2,14 @@ package com.fick.luckyfick.common;
 
 import com.fick.common.utils.file.CommonFileWriter;
 import com.fick.luckyfick.BaseTest;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * @Description:
@@ -39,6 +41,12 @@ public class CommonUtilsTest extends BaseTest {
     public void testWriteFile(){
         CommonFileWriter fileWriter = new CommonFileWriter("C:/Users/fick7/Desktop/test.log");
         fileWriter.append("test2\n");
+    }
+
+    @Test
+    public void testMin(){
+        List<Integer> ints = Lists.newArrayList(1,3,89,0);
+        System.out.printf("min:"+ints.stream().mapToInt(Integer::intValue).min().getAsInt());
     }
 
 }

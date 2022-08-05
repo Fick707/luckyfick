@@ -3,6 +3,7 @@ package com.fick.luckyfick.tcb.strategy.impl.red.pre;
 import com.fick.luckyfick.tcb.strategy.RedBallPreStrategy;
 import com.fick.luckyfick.tcb.strategy.TcbStrategyContext;
 import com.fick.luckyfick.tcb.strategy.impl.BaseStrategy;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @name: RedBallPreStrategyIncludeByAbsence
@@ -26,7 +27,9 @@ public class RedBallPreStrategyIncludeByAbsence extends BaseStrategy implements 
     public void bingo(TcbStrategyContext context) {
         for(int ballNumber = 1 ; ballNumber <= 33 ; ballNumber ++ ){
             int absenceCount = historyAnalysisService.getRedBallMissCountInLast(ballNumber);
-            if(absenceCount > threshold && !context.getRedBallIncluded().contains(ballNumber) && !context.getRedBallExcluded().contains(ballNumber)){
+            if(absenceCount > threshold
+                    && !context.getRedBallIncluded().contains(ballNumber)
+                    && !context.getRedBallExcluded().contains(ballNumber)){
                 context.getRedBallIncluded().add(ballNumber);
             }
         }
