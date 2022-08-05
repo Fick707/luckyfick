@@ -82,12 +82,12 @@ public class UserController {
     }
 
     /**
-     * 登出
+     * 查询我的ip
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/remoteIp",method = {RequestMethod.POST,RequestMethod.GET})
-    public WebResult<String> remoteIp(HttpServletRequest request) throws IOException {
+    @RequestMapping(value = "/myIp",method = {RequestMethod.POST,RequestMethod.GET})
+    public WebResult<String> myIp(HttpServletRequest request) throws IOException {
         return WebResult.success(request.getRemoteHost());
     }
 

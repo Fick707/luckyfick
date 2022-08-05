@@ -30,7 +30,7 @@ public class WebConfig {
         registration.addUrlPatterns("/*");
         Map<String, String> initParameters = new HashMap<String, String>(5);
         initParameters.put(WebConstants.CommonConstants.FILTER_INIT_PARAM_EXCLUSIONS,
-                        "/api/user/login,/api/user/remoteIp"
+                        "/api/user/login,/api/user/myIp"
                         );
         registration.setInitParameters(initParameters);
         registration.setName("ssoFilter");
