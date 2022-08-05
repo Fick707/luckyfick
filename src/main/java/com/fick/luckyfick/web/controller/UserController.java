@@ -3,6 +3,7 @@ package com.fick.luckyfick.web.controller;
 import com.fick.luckyfick.constants.ResultCode;
 import com.fick.luckyfick.model.WebResult;
 import com.fick.luckyfick.service.UserService;
+import com.fick.luckyfick.utils.HttpUtils;
 import com.fick.luckyfick.web.constants.WebConstants;
 import com.fick.luckyfick.web.model.param.UserLoginParam;
 import com.fick.luckyfick.web.model.result.UserDetailResult;
@@ -88,7 +89,7 @@ public class UserController {
      */
     @RequestMapping(value = "/myIp",method = {RequestMethod.POST,RequestMethod.GET})
     public WebResult<String> myIp(HttpServletRequest request) throws IOException {
-        return WebResult.success(request.getRemoteHost());
+        return WebResult.success(HttpUtils.getRealIp(request));
     }
 
 }
