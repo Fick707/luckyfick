@@ -173,22 +173,20 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         } else {
             codeToBet = maxCode + 1;
         }
-
-        MyBet tripleLucky = getFinalTempBet(3);
+        // 1. 先生成一个3倍的
+        MyBet tripleLucky = getTempBet(3);
         tripleLucky.setCode(codeToBet);
         tripleLucky.setDate(System.currentTimeMillis());
         tripleLucky.setMultiple(3);
         log.info("generated triple lucky bet {}.", JSON.toJSONString(tripleLucky));
         myTcbManage.addMyBet(tripleLucky);
-
-        // 2. 再生成一个1倍的
-        MyBet doubleLucky = getFinalTempBet(2);
+        // 2. 再生成一个2倍的
+        MyBet doubleLucky = getTempBet(2);
         doubleLucky.setCode(codeToBet);
         doubleLucky.setDate(System.currentTimeMillis());
         doubleLucky.setMultiple(1);
         log.info("generated double lucky bet {}.", JSON.toJSONString(doubleLucky));
         myTcbManage.addMyBet(doubleLucky);
-
         // 3. 再生成一个1倍的
         MyBet lucky = getFinalTempBet(1);
         lucky.setCode(codeToBet);
@@ -197,9 +195,16 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
         log.info("generated lucky bet {}.", JSON.toJSONString(lucky));
         myTcbManage.addMyBet(lucky);
         // 通过短信发送
-        if(StringUtils.isNotBlank(betNotificationNumbers)) {
+        String smsContent = "";
+        if(tripleLucky.isBlueAbsenceEnough()){
+            smsContent += getMsgContent(tripleLucky);
+        }
+        if(doubleLucky.isBlueAbsenceEnough()){
+            smsContent += getMsgContent(doubleLucky);
+        }
+        if(StringUtils.isNotBlank(smsContent) && StringUtils.isNotBlank(betNotificationNumbers)) {
             SmsSendParam smsSendParam = new SmsSendParam();
-            smsSendParam.setContentParams(Arrays.asList(getMsgContent(tripleLucky) + getMsgContent(doubleLucky) + getMsgContent(lucky)));
+            smsSendParam.setContentParams(Arrays.asList(smsContent));
             smsSendParam.setMsgType(LuckyFickConstants.SMSMsgType.BET_NOTIFICATION);
             smsSendParam.setPhoneNumbers(Arrays.asList(betNotificationNumbers.split(",")));
             smsService.sendSms(smsSendParam);
@@ -214,6 +219,9 @@ public class MyTcbBetServiceImpl implements MyTcbBetService {
      * @return
      */
     private String getMsgContent(MyBet myBet){
+        if(myBet == null){
+            return "";
+        }
         StringBuilder sb = new StringBuilder("");
         sb.append(myBet.getRed1());
         sb.append(",");

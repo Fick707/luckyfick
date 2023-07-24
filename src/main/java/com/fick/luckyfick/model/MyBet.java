@@ -67,6 +67,11 @@ public class MyBet implements Serializable {
     private Integer blue1;
 
     /**
+     * 蓝球连续缺失足够多了不？
+     */
+    private boolean isBlueAbsenceEnough = false;
+
+    /**
      * 下注倍数
      */
     private Integer multiple;

@@ -39,6 +39,7 @@ public class BlueBallPreStrategyIncludeByAbsence extends BaseStrategy implements
                     // 排除列表里未包含
                     && !context.getBlueBallExcluded().contains(ballNumber)){
                 context.getBlueBallIncluded().add(ballNumber);
+                context.setBlueAbsenceEnough(true);
                 break;
             }
         }

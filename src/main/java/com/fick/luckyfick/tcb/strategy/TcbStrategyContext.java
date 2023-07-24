@@ -63,4 +63,9 @@ public class TcbStrategyContext {
      */
     private boolean isBlueBallBingo = false;
 
+    /**
+     * 蓝球连续缺失足够多了不？
+     */
+    private boolean isBlueAbsenceEnough = false;
+
 }

@@ -123,6 +123,9 @@ public class BetServiceImpl implements BetService {
         // 先处理红球
         drawRed(luckyContext,redBallInitStrategies,redBallPreStrategies,redBallAfterStrategies);
         drawBlue(luckyContext,blueBallInitStrategies,blueBallPreStrategies,blueBallAfterStrategies);
+        if(luckyContext.isBlueAbsenceEnough()){
+            luckyContext.getLuckyBet().setBlueAbsenceEnough(true);
+        }
         return luckyContext.getLuckyBet();
     }
 
